@@ -1,0 +1,20 @@
+# Build folders
+Debug/
+Release/
+build/
+
+# Compiled files
+*.o
+*.elf
+*.hex
+*.map
+*.d
+*.lss
+
+# Temporary files
+*.tmp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
