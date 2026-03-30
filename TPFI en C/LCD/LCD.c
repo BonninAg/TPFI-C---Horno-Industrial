@@ -2,11 +2,14 @@
  * LCD.c
  *
  * Created: 17/3/2026 18:24:30
- *  Author: mryin
+ *  Author: 
  */ 
 
 #include "LCD.h"
 #include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\PCF8574\PCF8574.h"
+#include <avr/pgmspace.h>
+
+
 
 void Iniciar_LCD (void){
 	
@@ -40,10 +43,7 @@ void Iniciar_LCD (void){
 		Escribir_Comando_LCD(LCD_CLEAR); //clear
 		Escribir_Comando_LCD(0b00000110); //entry mode set
 		Escribir_Comando_LCD(0b00001111); //display on		
-		
-		USART_SendString("LCD_init\r\n");//**************************************
 }
-
 
 void Escribir_Caracter_LCD (char letra){
 	char Letra_Low;
@@ -60,7 +60,6 @@ void Escribir_Caracter_LCD (char letra){
 	
 	_delay_us(60);
 }
-
 
 void Escribir_Comando_LCD (char comando){
 	char Letra_Low;
@@ -83,7 +82,6 @@ void Escribir_Comando_LCD (char comando){
 	
 }
 
-
 void Escribir_Texto_LCD (char *puntero){
 	
 	while (*puntero){
@@ -93,6 +91,289 @@ void Escribir_Texto_LCD (char *puntero){
 }
 
 
+void Escribir_FraseFlash_LCD (const char *puntero_Flash){
+	
+	char caracter;
+	
+	    while ((caracter = pgm_read_byte(puntero_Flash++))) {
+		    Escribir_Caracter_LCD(caracter);
+	
+	}
+}
+
+
+PROGMEM const char General[] = "General";
+PROGMEM const char Avisos[] = "Avisos";
+PROGMEM const char Alarmas[] = "Alarmas";
+PROGMEM const char SetPoints[] = "Set Points";
+
+void Pantalla_Principal_1 (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(General);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Avisos);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(Alarmas);
+
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(SetPoints);
+
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Right_Arrow);
+	
+}
+
+
+PROGMEM const char Tiempos[] = "Tiempos";
+PROGMEM const char R_Sensores[] = "Rang.Sensores";
+PROGMEM const char R_Actuadores[] = "Rang.Actuadores";
+
+void Pantalla_Principal_2 (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(Tiempos);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(R_Sensores);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(R_Actuadores);
+
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);
+	
+}
+
+
+
+PROGMEM const char Z1[] = "Z1:";
+PROGMEM const char Z2[] = "Z2:";
+PROGMEM const char Z3[] = "Z3:";
+PROGMEM const char W[] = "W:";
+PROGMEM const char A[] = "A:";
+
+PROGMEM const char Arranque[] = "Arranque";
+PROGMEM const char Activo[] = "Activo";
+PROGMEM const char PControlada[] = "P.Controlada";
+PROGMEM const char PEmergencia[] = "P.Emergencia";
+PROGMEM const char * const Estado[] = {Arranque, Activo, PControlada, PEmergencia};
+
+void Menu_General (uint8_t indice){
+	
+		Escribir_Comando_LCD(LCD_CLEAR);
+		Escribir_FraseFlash_LCD(Z1);
+		//variable
+		Escribir_Comando_LCD(0x8B); //posición en pantalla.
+		Escribir_FraseFlash_LCD(W);
+		//variable
+		Escribir_Comando_LCD(0xCB); //posición en pantalla.
+		Escribir_FraseFlash_LCD(A);
+		//variable
+		Escribir_Comando_LCD(Linea2);
+		Escribir_FraseFlash_LCD(Z2);
+		//variable
+		Escribir_Comando_LCD(Linea3);
+		Escribir_FraseFlash_LCD(Z3);
+
+Escribir_Comando_LCD(Linea4);
+char *Puntero_Estado = (char*) pgm_read_word (&(Estado[indice])); //(char*) es el cast, le dice que el número lo trate como lugar de memoria, ej= va a leer 0x1024. Eso es un lugar de memoria, no un entero
+Escribir_FraseFlash_LCD(Puntero_Estado);
+
+		Escribir_Comando_LCD(0xDF); //posición en pantalla.
+		Escribir_Caracter_LCD(Left_Arrow);
+
+}
+
+
+
+PROGMEM const char Sensores[] = "Sensores";
+PROGMEM const char Temperatura[] = "Temperatura";
+void Menu_Avisos (void){
+	
+	Escribir_Comando_LCD(0x85); //posición en pantalla.
+	Escribir_FraseFlash_LCD(Avisos);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Sensores);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(Temperatura);
+	
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);
+}
+
+
+PROGMEM const char WTT1[] = "W:TT1";
+PROGMEM const char WTT2[] = "W:TT2";
+PROGMEM const char WTT3[] = "W:TT3";
+PROGMEM const char WTT4[] = "W:TT4";
+PROGMEM const char WTT5[] = "W:TT5";
+PROGMEM const char WTT6[] = "W:TT6";
+PROGMEM const char WTT7[] = "W:TT7";
+PROGMEM const char WTT8[] = "W:TT8";
+
+void Menu_Avisos_Sensores (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(WTT1);
+	Escribir_Comando_LCD(0x89); //posición en pantalla.
+	Escribir_FraseFlash_LCD(WTT5);
+	
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(WTT2);
+	Escribir_Comando_LCD(0xC9); //posición en pantalla.
+	Escribir_FraseFlash_LCD(WTT6);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(WTT3);
+	Escribir_Comando_LCD(0x99); //posición en pantalla.
+	Escribir_FraseFlash_LCD(WTT7);
+	
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(WTT4);
+	Escribir_Comando_LCD(0xD9); //posición en pantalla.
+	Escribir_FraseFlash_LCD(WTT7);
+
+	
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);
+}
+
+
+PROGMEM const char Temp[] = " Temp";
+PROGMEM const char Tzona1[] = "T  Zona 1";
+PROGMEM const char Tzona2[] = "T  Zona 2";
+PROGMEM const char Tzona3[] = "T  Zona 3";
+
+void Menu_Avisos_Temperatura (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(Avisos);
+	Escribir_FraseFlash_LCD(Temp);
+	Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Tzona1);
+		Escribir_Comando_LCD(0xC1);
+		Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(Tzona2);
+		Escribir_Comando_LCD(0x91);
+		Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(Tzona3);		
+		Escribir_Comando_LCD(0xD1);
+		Escribir_Caracter_LCD(gradito);
+		
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);		
+		
+}
+
+
+PROGMEM const char PID[] = " PIDs";
+void Menu_Alarmas (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_Comando_LCD(0x85); //posición en pantalla.
+	Escribir_FraseFlash_LCD(Alarmas);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Sensores);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(Temperatura);
+	
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(PID);
+	
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);
+}
+
+
+void Menu_Alarmas_Sensores(void){
+	
+	
+	
+}
+
+
+void Menu_Alarmas_Temperatura (void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(Alarmas);
+	Escribir_FraseFlash_LCD(Temp);
+	Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Tzona1);
+	Escribir_Comando_LCD(0xC1);
+	Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(Tzona2);
+	Escribir_Comando_LCD(0x91);
+	Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(Tzona3);
+	Escribir_Comando_LCD(0xD1);
+	Escribir_Caracter_LCD(gradito);
+	
+	Escribir_Comando_LCD(0xDF); //posición en pantalla.
+	Escribir_Caracter_LCD(Left_Arrow);
+	
+}
+
+
+PROGMEM const char PIDH1[] = "PID H1";
+PROGMEM const char PIDH2[] = "PID H2";
+PROGMEM const char PIDB1[] = "PID B1";
+PROGMEM const char PIDB2[] = "PID B2";
+PROGMEM const char PIDB3[] = "PID B3";
+PROGMEM const char PIDC3[] = "PID C3";
+void Menu_Alarmas_PIDS(void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_FraseFlash_LCD(Alarmas);
+	Escribir_FraseFlash_LCD(PID);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(PIDH1);
+	Escribir_Comando_LCD(0xC8);
+	Escribir_FraseFlash_LCD(PIDH2);
+	
+	Escribir_Comando_LCD(Linea3);
+	Escribir_FraseFlash_LCD(PIDB1);
+	Escribir_Comando_LCD(0x98);
+	Escribir_FraseFlash_LCD(PIDB2);
+	
+	Escribir_Comando_LCD(Linea4);
+	Escribir_FraseFlash_LCD(PIDB3);
+	Escribir_Comando_LCD(0xD8);
+	Escribir_FraseFlash_LCD(PIDC3);
+	
+}
+
+
+void Menu_SetPoints(void){
+	
+	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_Comando_LCD(0X83);
+	Escribir_FraseFlash_LCD(SetPoints);
+	
+	Escribir_Comando_LCD(Linea2);
+	Escribir_FraseFlash_LCD(Temp);
+	
+}
 
 
 /*

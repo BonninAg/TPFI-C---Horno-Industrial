@@ -39,7 +39,6 @@ short unsigned int temp;
 	
 	Enviar_Dato_I2C(ads1115_address);			//mandamos la: address + R/W bit (= 0 para W)
 	
-		
 	Enviar_Dato_I2C(ads1115_Conversion_Reg);	//mandamos el: pointer register (= 0 para leer el registro de conversión)
 	
 	Start_I2C();								//REPEATED START

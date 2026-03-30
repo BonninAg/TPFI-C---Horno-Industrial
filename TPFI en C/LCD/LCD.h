@@ -12,6 +12,9 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
+
+
+
 /*------------------- Definiciones de Comandos de LCD ------------------------*/
 
 #define     LCD_CLEAR	0b00000001  // Limpia pantalla
@@ -31,7 +34,8 @@
 #define LCD_Cursor_R		0b00010100
 #define LCD_Cursor_L		0b00010000
 
-#define gradito		0b11011111
+#define gradito				0b11011111
+
 
 void Iniciar_LCD(void);
 
@@ -40,6 +44,25 @@ void Escribir_Caracter_LCD (char Letra_High);
 void Escribir_Comando_LCD (char Letra_High);
 
 void Escribir_Texto_LCD (char *puntero);
+
+void Escribir_FraseFlash_LCD (const char *puntero_Flash);
+
+
+void Pantalla_Principal_1 (void);
+void Pantalla_Principal_2 (void);
+
+void Menu_General (uint8_t indice);
+
+void Menu_Avisos (void);
+void Menu_Avisos_Sensores (void);
+void Menu_Avisos_Temperatura (void);
+
+void Menu_Alarmas (void);
+void Menu_Alarmas_Temperatura (void);
+
+
+
+
 
 
 #endif /* LCD_H_ */
