@@ -136,25 +136,20 @@ PORTC &= ~(1 << PC0);
 
 USART_SendString("configure\r\n");//************************************
  
-	Menu_Avisos();
-	_delay_ms(1000);
-	
-	Menu_Alarmas();
-		_delay_ms(1000);
+ 
+uint16_t deleteME = 500;
+uint16_t deleteME2 = 100;
+uint16_t deleteME3 = 5;
 
-	Menu_Avisos_Temperatura();
-	_delay_ms(1000);
-		
+
 	Menu_Avisos_Sensores();
-		_delay_ms(1000);	
-		
-	Menu_Alarmas_Temperatura();
-		_delay_ms(1000);
-		
-
-  
-
-
+	
+	_delay_ms(1000);
+	Menu_RangSensores(1, deleteME, deleteME2, deleteME3);
+	_delay_ms(1000);
+	Menu_RangSensores(2, deleteME, deleteME2, deleteME3);
+	_delay_ms(1000);
+	Menu_RangSensores(3, deleteME, deleteME2, deleteME3);
  
  /*
 for (int i = 0; i < 16; i++){

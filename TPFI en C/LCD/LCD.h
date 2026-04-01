@@ -11,7 +11,8 @@
 
 #define F_CPU 16000000UL
 #include <util/delay.h>
-
+#include <avr/pgmspace.h>
+#include <stdio.h>
 
 
 
@@ -35,7 +36,7 @@
 #define LCD_Cursor_L		0b00010000
 
 #define gradito				0b11011111
-
+#define dosPuntos			0b00111010
 
 void Iniciar_LCD(void);
 
@@ -59,10 +60,13 @@ void Menu_Avisos_Temperatura (void);
 
 void Menu_Alarmas (void);
 void Menu_Alarmas_Temperatura (void);
+void Menu_Alarmas_PIDS(void);
 
+void Menu_SetPoints_Z1(uint8_t zona, uint16_t varTemp, uint16_t varCV);
+void Menu_SetPoints_Z3(uint16_t varTemp, uint16_t varCV);
 
+void Menu_Tiempos (uint16_t varPreCal, uint16_t varCal, uint16_t varEnf);
 
-
-
+void Menu_RangSensores (uint8_t menu, uint16_t varTTa, uint16_t varTTb, uint16_t varTTc);
 
 #endif /* LCD_H_ */
