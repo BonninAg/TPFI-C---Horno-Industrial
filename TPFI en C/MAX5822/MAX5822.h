@@ -13,9 +13,15 @@
 #include <stdio.h>
 
 //ya con el último bit para escritura.
+/*
 #define MAX5822L_IP_GND_write  (0b01110000)
 #define MAX5822L_IP_VCC_write  (0b01110010)
 #define MAX5822M_IP_GND_write  (0b10110000)
+*/
+
+#define DAC1  (0b01110000)
+#define DAC2  (0b01110010)
+#define DAC3  (0b10110000)
 
 //0000 xxxx
 //0001 xxxx

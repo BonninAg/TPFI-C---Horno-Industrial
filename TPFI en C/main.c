@@ -20,7 +20,7 @@ void USART_SendString(char* s);
 
 
 volatile short unsigned int habilitar_conversion = 0;
-volatile short unsigned int contador = 0;
+volatile uint16_t contador = 0;
 volatile uint16_t valor_adc;
 		 uint8_t Habilitar_Teclado;
 
@@ -128,9 +128,9 @@ PORTC &= ~(1 << PC0);
 
 
 	//secuencia de Power-up device.
-	Escribir_MAX5822 (MAX5822L_IP_GND_write, 0b11110000, 0b000000001100);
-	Escribir_MAX5822 (MAX5822L_IP_VCC_write, 0b11110000, 0b000000001100);
-	Escribir_MAX5822 (MAX5822M_IP_GND_write, 0b11110000, 0b000000001100);
+	Escribir_MAX5822 (DAC1, 0b11110000, 0b000000001100);
+	Escribir_MAX5822 (DAC2, 0b11110000, 0b000000001100);
+	Escribir_MAX5822 (DAC3, 0b11110000, 0b000000001100);
 
 	Iniciar_LCD();
 
@@ -141,15 +141,9 @@ uint16_t deleteME = 500;
 uint16_t deleteME2 = 100;
 uint16_t deleteME3 = 5;
 
-
-	Menu_Avisos_Sensores();
-	
-	_delay_ms(1000);
-	Menu_RangSensores(1, deleteME, deleteME2, deleteME3);
-	_delay_ms(1000);
-	Menu_RangSensores(2, deleteME, deleteME2, deleteME3);
-	_delay_ms(1000);
-	Menu_RangSensores(3, deleteME, deleteME2, deleteME3);
+Menu_SetPoints_Z1(2, deleteME, deleteME3);
+ 
+ 
  
  /*
 for (int i = 0; i < 16; i++){
@@ -163,6 +157,7 @@ for (int i = 0; i < 16; i++){
  Escribir_Caracter_LCD(gradito);
  */
  
+
  
     while (1) {
 		
@@ -182,6 +177,7 @@ for (int i = 0; i < 16; i++){
 			
 
 
+/*
 		if (Habilitar_LeerTemperatura == 1){
 			
 			switch (Sensor_Temperatura){
@@ -211,7 +207,7 @@ for (int i = 0; i < 16; i++){
 				ads1155_MSB_Config = 0xC1;
 			}//switch
 		}//habilitarLeer
-		
+	*/	
 	}//while
     
 }//main
@@ -219,38 +215,62 @@ for (int i = 0; i < 16; i++){
 ISR(TIMER1_COMPA_vect) {
 USART_SendString("timer1\r\n");//**************************************
 
+ //for (ads1155_MSB_Config = 0xC1; ads1155_MSB_Config < 0x101; ads1155_MSB_Config += 0x10){
+
+ads1155_MSB_Config = 0xC1;
+
+for (char i = 0; i <4; i++){	 
+	 cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
+
+	_delay_ms(5);
+
+	 temperatura = Leer_ads1115(ads1115_IP_VCC_write);
+	 
+	 //--------------cambio de canal--------------
+	 ads1155_MSB_Config += 0x10;
+	 
+	 if(ads1155_MSB_Config > 0xF1){
+		 ads1155_MSB_Config = 0xC1;
+	 }
+	 //-------------------------------------------
+	 
+	 sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
+	 USART_SendString(buffer);								// Enviar el texto por el puerto serie
+ }
+ 
+/*
 //----------leer los ads1115----------------
 
-//	Habilitar_LeerTemperatura = 1;
-//	Sensor_Temperatura = 1;
+	Habilitar_LeerTemperatura = 1;
+	Sensor_Temperatura = 1;
 
 //------------------------------------------
 
 //ads1155_MSB_Config = 0xC1;
 //cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, 0xF1, 0b11100000);
-
+*/
 
 	contador += 10;
 	if (contador > 4096){
 		contador = 0;
 	}
 	
-	Escribir_MAX5822 (MAX5822L_IP_GND_write, canalA, contador);
-	Escribir_MAX5822 (MAX5822L_IP_GND_write, canalB, contador);
+	Escribir_MAX5822 (DAC1, canalA, contador);
+	Escribir_MAX5822 (DAC1, canalB, contador);
 	
-	Escribir_MAX5822 (MAX5822L_IP_VCC_write, canalA, contador);
-	Escribir_MAX5822 (MAX5822L_IP_VCC_write, canalB, contador);
+	Escribir_MAX5822 (DAC2, canalA, contador);
+	Escribir_MAX5822 (DAC2, canalB, contador);
 	
-	Escribir_MAX5822 (MAX5822M_IP_GND_write, canalA, contador);
-	Escribir_MAX5822 (MAX5822M_IP_GND_write, canalB, contador);
-	
+	Escribir_MAX5822 (DAC3, canalA, contador);
+	Escribir_MAX5822 (DAC3, canalB, contador);
+
 }
 
 
 ISR(INT0_vect) {
 	USART_SendString("int0\r\n");//**************************************
 //sprintf(buffer, "config: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-//USART_SendString(buffer);								// Enviar el texto por el puerto serie
+//USART_SendString(buffer);							     	// Enviar el texto por el puerto serie
 
 
 /*
@@ -269,8 +289,8 @@ ISR(INT0_vect) {
 	
 	sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
 	USART_SendString(buffer);								// Enviar el texto por el puerto serie
-	
-*/	
+*/
+
 
 
 /*
