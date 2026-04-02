@@ -176,12 +176,14 @@ for (int i = 0; i < 16; i++){
 
 
 		if (Habilitar_LeerTemperatura == 1){
-			
+		
+			Canal_Temp += 1;
 			sprintf(buffer, "canal_temp: %u\r\n", Canal_Temp);	// Convertir el valor numérico a una cadena de texto
 			USART_SendString(buffer);								// Enviar el texto por el puerto serie
 			
 			//USART_SendString("habilitar leer\r\n");//**************************************
 			Habilitar_LeerTemperatura = 0;
+			
 			switch (Sensor_Temperatura){
 				case 1:
 				USART_SendString("switch sensor1\r\n");//**************************************
@@ -245,36 +247,11 @@ USART_SendString("timer1\r\n");//**************************************
 
 	Habilitar_LeerTemperatura = 1;
 	Sensor_Temperatura = 1;
-	Canal_Temp = 1;
+	Canal_Temp = 0;
 
 //------------------------------------------
 
 
-
-/*-----------------prueba con joaco----------------------------------------------------------------
- //for (ads1155_MSB_Config = 0xC1; ads1155_MSB_Config < 0x101; ads1155_MSB_Config += 0x10){
-
-ads1155_MSB_Config = 0xC1;
-
-for (char i = 0; i <4; i++){	 
-	 cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-
-	_delay_ms(5);
-
-	 temperatura = Leer_ads1115(ads1115_IP_VCC_write);
-	 
-	 //--------------cambio de canal--------------
-	 ads1155_MSB_Config += 0x10;
-	 
-	 if(ads1155_MSB_Config > 0xF1){
-		 ads1155_MSB_Config = 0xC1;
-	 }
-	 //-------------------------------------------
-	 
-	 sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
-	 USART_SendString(buffer);								// Enviar el texto por el puerto serie
- }
- -------------------------------------------------------------------------------------------------*/
 
 
 
@@ -304,18 +281,16 @@ ISR(INT0_vect) {
 
 
 
-	if (Sensor_Temperatura == 1){
+	if (Canal_Temp == 1 || Canal_Temp == 2 || Canal_Temp == 3 || Canal_Temp == 4){
 		//USART_SendString("lei sensor 1\r\n");//**************************************
 		temperatura = Leer_ads1115(ads1115_IP_VCC_write);
 		Habilitar_LeerTemperatura = 1;
-		Canal_Temp += 1;
 	}
 
-	if(Sensor_Temperatura == 2){
+	if(Canal_Temp == 5 || Canal_Temp == 6 || Canal_Temp == 7 || Canal_Temp == 8){
 		//USART_SendString("lei sensor 2\r\n");//**************************************
 		temperatura = Leer_ads1115(ads1115_IP_GND_write);
 		Habilitar_LeerTemperatura = 1;
-		Canal_Temp += 1;
 	}
 
 //	Vector_Temperaturas [Canal_Temp] = temperatura;
@@ -329,26 +304,6 @@ ISR(INT0_vect) {
 
 
 
-/*
-sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-USART_SendString(buffer);
-	temperatura = Leer_ads1115(ads1115_IP_GND_write);				
-//--------------cambio de canal--------------
-		ads1155_MSB_Config += 0x10;
-		
-		if(ads1155_MSB_Config > 0xF1){
-			ads1155_MSB_Config = 0xC1;	
-		}
-//-------------------------------------------	
-	sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);
-
-	cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-
-
-	sprintf(buffer, "Temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);						// Enviar el texto por el puerto serie
-*/
 }
 
 
@@ -449,7 +404,6 @@ uint8_t Convertir_Keypad (uint16_t valor_adc){
 
 
 
-
 /*----------------------------------leer sensores 1er intento----------------------------------
 		if (Habilitar_LeerTemperatura == 1){
 			switch (Sensor_Temperatura){
@@ -478,4 +432,54 @@ break;//case2
 default:
 Sensor_Temperatura = 0;
 ads1155_MSB_Config = 0xC1;
+*/
+
+
+
+/*-----------------prueba con joaco leer sensores----------------------------------------------------------------
+ //for (ads1155_MSB_Config = 0xC1; ads1155_MSB_Config < 0x101; ads1155_MSB_Config += 0x10){
+
+ads1155_MSB_Config = 0xC1;
+
+for (char i = 0; i <4; i++){	 
+	 cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
+
+	_delay_ms(5);
+
+	 temperatura = Leer_ads1115(ads1115_IP_VCC_write);
+	 
+	 //--------------cambio de canal--------------
+	 ads1155_MSB_Config += 0x10;
+	 
+	 if(ads1155_MSB_Config > 0xF1){
+		 ads1155_MSB_Config = 0xC1;
+	 }
+	 //-------------------------------------------
+	 
+	 sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
+	 USART_SendString(buffer);								// Enviar el texto por el puerto serie
+ }
+ -------------------------------------------------------------------------------------------------*/
+
+
+
+/*-------------------otro intento de leer sensores------------------------------------------------------------
+sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
+USART_SendString(buffer);
+	temperatura = Leer_ads1115(ads1115_IP_GND_write);				
+//--------------cambio de canal--------------
+		ads1155_MSB_Config += 0x10;
+		
+		if(ads1155_MSB_Config > 0xF1){
+			ads1155_MSB_Config = 0xC1;	
+		}
+//-------------------------------------------	
+	sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
+	USART_SendString(buffer);
+
+	cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
+
+
+	sprintf(buffer, "Temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
+	USART_SendString(buffer);						// Enviar el texto por el puerto serie
 */
