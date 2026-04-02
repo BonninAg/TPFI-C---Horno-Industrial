@@ -28,7 +28,7 @@
 
 volatile uint8_t ads1115_address;
 volatile uint8_t ads1155_pointer_register;
-
+volatile uint8_t ads1155_MSB_Config;
 volatile uint8_t ads1155_LSB_Config;
 
 
