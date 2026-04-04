@@ -157,7 +157,7 @@ for (int i = 0; i < 16; i++){
  Escribir_Caracter_LCD(gradito);
  */
  
-
+//prueba brunch
  
     while (1) {
 		
@@ -267,6 +267,41 @@ ISR(ADC_vect) {
 	
 
 
+
+uint8_t Convertir_Keypad (uint16_t valor_adc){
+
+	if(valor_adc >= 795 && valor_adc < 810)
+	return 0;
+	else if(valor_adc >= 765 && valor_adc < 775)
+	return 1;
+	else if(valor_adc >= 900 && valor_adc < 910)
+	return 2;
+	else if(valor_adc >= 1010 && valor_adc < 1020)
+	return 3;
+	else if(valor_adc >= 745 && valor_adc < 760)
+	return 4;
+	else if(valor_adc >= 870 && valor_adc < 880)
+	return 5;
+	else if(valor_adc >= 975 && valor_adc < 985)
+	return 6;
+	else if(valor_adc >= 715 && valor_adc < 725)
+	return 7;
+	else if(valor_adc >= 835 && valor_adc < 850)
+	return 8;
+	else if(valor_adc >= 925 && valor_adc < 935){
+		return 9;
+	}
+	return 0;
+	else if(valor_adc >= 690 && valor_adc < 700) //(Asterisco)
+		return = 10;
+	else if(valor_adc >= 875 && valor_adc < 895) //(numeral)
+		return = 11;
+	
+}
+
+
+
+/*
 uint8_t Convertir_Keypad (uint16_t valor_adc){
 
 	if(valor_adc >= 795 && valor_adc < 810)	
@@ -298,7 +333,7 @@ uint8_t Convertir_Keypad (uint16_t valor_adc){
 //		return = 0b00100011;
 	
 }
-
+*/
 
 void USART_Transmit(unsigned char data) {
 	// Esperar a que el buffer de transmisión esté vacío
