@@ -163,77 +163,35 @@ for (int i = 0; i < 16; i++){
 		
 		if(Habilitar_Teclado == 1){
 			Keypad_Letra = Convertir_Keypad (valor_adc);
-			sprintf(imprimir, "Teclado: %u\r\n", Keypad_Letra);	// Convertir el valor numérico a una
-			USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
+			//sprintf(imprimir, "Teclado: %u\r\n", Keypad_Letra);	// Convertir el valor numérico a una
+			//USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 			if(Keypad_Letra == 4){	
 			}	
 			Habilitar_Teclado =0;
 		}//teclado
 			
-			
-
-
-
-
+	
 		if (Habilitar_LeerTemperatura == 1){
-		
-			Canal_Temp += 1;
-			sprintf(buffer, "canal_temp: %u\r\n", Canal_Temp);	// Convertir el valor numérico a una cadena de texto
-			USART_SendString(buffer);								// Enviar el texto por el puerto serie
-			
-			//USART_SendString("habilitar leer\r\n");//**************************************
 			Habilitar_LeerTemperatura = 0;
-			
-			switch (Sensor_Temperatura){
+			Canal_Temp += 1;
+			switch (Canal_Temp){
 				case 1:
-				USART_SendString("switch sensor1\r\n");//**************************************
-					switch (Canal_Temp){
-						case 1:
-						ads1155_MSB_Config = 0xC1;
-						break;
-						case 2:
-						ads1155_MSB_Config = 0xD1;
-						break;						
-						case 3:
-						ads1155_MSB_Config = 0xE1;					
-						break;						
-						case 4:
-						ads1155_MSB_Config = 0xF1;
-						Sensor_Temperatura = 2;
-						break;	
-						default:					
-						break;					
-					}//switchCanal
-					cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-				break;	
-			
+				ads1155_MSB_Config = 0xC1;
+				break;
 				case 2:
-				USART_SendString("switch sensor2\r\n");//**************************************
-					switch (Canal_Temp){
-						case 5:
-						ads1155_MSB_Config = 0xC1;
-						USART_SendString("switch canal5\r\n");//**************************************
-						break;
-						case 6:
-						ads1155_MSB_Config = 0xD1;
-						USART_SendString("switch canal6\r\n");//**************************************
-						break;
-						case 7:
-						ads1155_MSB_Config = 0xE1;
-						USART_SendString("switch canal7\r\n");//**************************************
-						break;
-						case 8:
-						ads1155_MSB_Config = 0xF1;
-						USART_SendString("switch canal8\r\n");//**************************************
-						break;
-						default:
-						Sensor_Temperatura = 0;
-						break;
-					}//switchCanal
-					cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-				break;		
-			
-			}//switchSensor		
+				ads1155_MSB_Config = 0xD1;
+				break;						
+				case 3:
+				ads1155_MSB_Config = 0xE1;					
+				break;						
+				case 4:
+				ads1155_MSB_Config = 0xF1;
+				break;	
+				default:					
+				break;					
+			}//switchCanal
+			cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
+			cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);		
 		}//habilitarLeer
 
 }//while
@@ -241,22 +199,20 @@ for (int i = 0; i < 16; i++){
 
 
 ISR(TIMER1_COMPA_vect) {
-USART_SendString("timer1\r\n");//**************************************
+//USART_SendString("timer1\r\n");//**************************************
 
 //----------leer los ads1115----------------
-
 	Habilitar_LeerTemperatura = 1;
-	Sensor_Temperatura = 1;
 	Canal_Temp = 0;
-
+	
+for (char i = 0; i < 8; i++){
+	//sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
+	//USART_SendString(buffer);							// Enviar el texto por el puerto serie
+}	
 //------------------------------------------
 
 
-
-
-
-
-/*------------------dacs-----------------
+/*------------------dacs----------------------------
 	contador += 10;
 	if (contador > 4096){
 		contador = 0;
@@ -275,42 +231,22 @@ USART_SendString("timer1\r\n");//**************************************
 
 
 ISR(INT0_vect) {
-	USART_SendString("int0\r\n");//**************************************
-//sprintf(buffer, "config: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-//USART_SendString(buffer);							     	// Enviar el texto por el puerto serie
+	//USART_SendString("int0\r\n");
 
-
-
+/*----------------------------------Leer ads1115--------------------------------------*/
 	if (Canal_Temp == 1 || Canal_Temp == 2 || Canal_Temp == 3 || Canal_Temp == 4){
-		//USART_SendString("lei sensor 1\r\n");//**************************************
+
 		temperatura = Leer_ads1115(ads1115_IP_VCC_write);
-		Habilitar_LeerTemperatura = 1;
-	}
-
-	if(Canal_Temp == 5 || Canal_Temp == 6 || Canal_Temp == 7 || Canal_Temp == 8){
-		//USART_SendString("lei sensor 2\r\n");//**************************************
+		Vector_Temperaturas [(Canal_Temp - 1)] = temperatura;
+		
 		temperatura = Leer_ads1115(ads1115_IP_GND_write);
-		Habilitar_LeerTemperatura = 1;
-	}
-
-//	Vector_Temperaturas [Canal_Temp] = temperatura;
-//	Canal_Temp++;
+		Vector_Temperaturas [(Canal_Temp - 1) + 4] = temperatura;
 	
-	sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);								// Enviar el texto por el puerto serie
-
-
-
-
-
+	Habilitar_LeerTemperatura = 1;	
+	}
+/*------------------------------------------------------------------------------------*/
 
 }
-
-
-
-
-
-
 
 
 ISR(INT1_vect){
@@ -329,18 +265,6 @@ ISR(ADC_vect) {
 	
 }	
 	
-void USART_Transmit(unsigned char data) {
-	// Esperar a que el buffer de transmisión esté vacío
-	while (!(UCSR0A & (1 << UDRE0)));
-	// Poner el dato en el registro, esto envía el byte
-	UDR0 = data;
-}
-
-void USART_SendString(char* s) {
-	while (*s) {
-		USART_Transmit(*s++);
-	}
-}
 
 
 uint8_t Convertir_Keypad (uint16_t valor_adc){
@@ -376,6 +300,18 @@ uint8_t Convertir_Keypad (uint16_t valor_adc){
 }
 
 
+void USART_Transmit(unsigned char data) {
+	// Esperar a que el buffer de transmisión esté vacío
+	while (!(UCSR0A & (1 << UDRE0)));
+	// Poner el dato en el registro, esto envía el byte
+	UDR0 = data;
+}
+
+void USART_SendString(char* s) {
+	while (*s) {
+		USART_Transmit(*s++);
+	}
+}
 
 
 
