@@ -132,6 +132,12 @@
     <Compile Include="I2C\I2C.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Keypad\Keypad.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Keypad\Keypad.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="LCD\LCD.c">
       <SubType>compile</SubType>
     </Compile>
@@ -159,6 +165,7 @@
     <Folder Include="ADS1115" />
     <Folder Include="MAX5822" />
     <Folder Include="LCD" />
+    <Folder Include="Keypad" />
     <Folder Include="PCF8574" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />

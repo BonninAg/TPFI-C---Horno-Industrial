@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
+#include <stdlib.h>			//para el abs
 
 char buffer[20];
 char imprimir [20];
@@ -18,15 +19,21 @@ char imprimir [20];
 void USART_Transmit(unsigned char data);
 void USART_SendString(char* s);
 
+/*--------variables menu lcd---------*/
+char maq_estado_pantalla = 100;
+uint8_t Mostrar_Menu = 0;
+uint8_t no_repetir;
+//char menuPPL[] = 99, 100, 101, 102;
 
-volatile short unsigned int habilitar_conversion = 0;
+/*-----------------------------------------*/
+
+/*--------variables para el Keypad---------*/
+volatile uint16_t habilitar_conversion = 0;
 volatile uint16_t contador = 0;
 volatile uint16_t valor_adc;
-		 uint8_t Habilitar_Teclado;
-
-
-uint8_t Convertir_Keypad (uint16_t valor_adc);
-uint8_t Keypad_Letra;
+volatile uint8_t  Habilitar_Teclado;
+		 uint8_t Keypad_Letra;
+/*-----------------------------------------*/
 
 /*-------variables para el ads1115---------*/
 volatile uint16_t temperatura;
@@ -34,7 +41,6 @@ volatile uint8_t Habilitar_LeerTemperatura = 0;
 volatile uint8_t Sensor_Temperatura = 0;
 volatile uint16_t Vector_Temperaturas [8];
 volatile uint8_t Canal_Temp = 0;
-
 /*-----------------------------------------*/
 
 #include "ADS1115/ADS1115.h"
@@ -42,7 +48,7 @@ volatile uint8_t Canal_Temp = 0;
 #include "MAX5822/MAX5822.h"
 #include "PCF8574/PCF8574.h"
 #include "LCD/LCD.h"
-
+#include "Keypad/Keypad.h"
 
 
 int main(void){
@@ -105,6 +111,7 @@ UCSR0C = (1 << UCSZ01) | (1 << UCSZ00) |   // 8 bits
 
 /*---------------------------- ADC ------------------------------*/
 ADMUX = (1<<REFS0);  // AVcc como referencia, canal ADC0 (MUX=0000)
+ADMUX = (ADMUX & 0xF0) | 0x00;  // Seleccionar canal 0 
 ADCSRA = (1<<ADEN)  |  // habilita ADC
 (1<<ADIE)  |  // habilita interrupción ADC
 (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0); // prescaler 128
@@ -113,6 +120,7 @@ DIDR0 = 0x00;
 
 DDRC &= ~(1 << PC0);   // PC0 como entrada
 PORTC &= ~(1 << PC0);
+/*---------------------------------------------------------------*/
 
 	sei();
 	
@@ -134,17 +142,14 @@ PORTC &= ~(1 << PC0);
 
 	Iniciar_LCD();
 
-USART_SendString("configure\r\n");//************************************
+USART_SendString("Fin Config\r\n");//************************************
  
  
-uint16_t deleteME = 500;
-uint16_t deleteME2 = 100;
-uint16_t deleteME3 = 5;
+//1uint16_t deleteME = 500;
+//uint16_t deleteME2 = 100;
+//uint16_t deleteME3 = 5;
 
-Menu_SetPoints_Z1(2, deleteME, deleteME3);
- 
- 
- 
+
  /*
 for (int i = 0; i < 16; i++){
 Escribir_Comando_LCD(LCD_Shift_L);
@@ -157,20 +162,41 @@ for (int i = 0; i < 16; i++){
  Escribir_Caracter_LCD(gradito);
  */
  
-//prueba brunch
+
  
     while (1) {
-		
+/*-------------------------------------------Teclado------------------------------------------*/	
 		if(Habilitar_Teclado == 1){
-			Keypad_Letra = Convertir_Keypad (valor_adc);
-			//sprintf(imprimir, "Teclado: %u\r\n", Keypad_Letra);	// Convertir el valor numérico a una
-			//USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
-			if(Keypad_Letra == 4){	
-			}	
-			Habilitar_Teclado =0;
-		}//teclado
+			Habilitar_Teclado =0;		
+			Mostrar_Menu = Convertir_Keypad (valor_adc, &maq_estado_pantalla);
+
 			
+				sprintf(imprimir, "maqEst: %u\r\n", maq_estado_pantalla);	// Convertir el valor numérico a una cadena de texto
+				USART_SendString(imprimir);						// Enviar el texto por el puerto serie
+			
+		}//teclado
+/*---------------------------------------------------------------------------------------------*/		
 	
+
+/*-------------------------------------------Pantallas------------------------------------------*/	
+		if (maq_estado_pantalla == 100 || maq_estado_pantalla == 99){
+				maq_estado_pantalla=100;
+			if (no_repetir == 0){
+				no_repetir = 1;
+				Pantalla_Principal_1();
+			}
+		}
+		
+		if (maq_estado_pantalla == 101 || maq_estado_pantalla == 102){
+			maq_estado_pantalla=101;
+			if (no_repetir == 1){
+				no_repetir = 0;
+				Pantalla_Principal_2();
+			}
+		}
+/*---------------------------------------------------------------------------------------------*/	
+
+/*-------------------------------------------Leer ads1115------------------------------------------*/	
 		if (Habilitar_LeerTemperatura == 1){
 			Habilitar_LeerTemperatura = 0;
 			Canal_Temp += 1;
@@ -193,6 +219,7 @@ for (int i = 0; i < 16; i++){
 			cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
 			cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);		
 		}//habilitarLeer
+/*---------------------------------------------------------------------------------------------*/	
 
 }//while
 }//main
@@ -250,90 +277,21 @@ ISR(INT0_vect) {
 
 
 ISR(INT1_vect){
-	// Seleccionar canal 0 (por si venías usando otro)
-	ADMUX = (ADMUX & 0xF0) | 0x00;
-	// Iniciar conversión
-	ADCSRA |= (1<<ADSC);
+	ADCSRA |= (1<<ADSC);   	// Iniciar conversión
 }
 
 ISR(ADC_vect) {
 	valor_adc = ADC;  // lee ADCL + ADCH automáticamente
-	
-	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(imprimir);						// Enviar el texto por el puerto serie
 	Habilitar_Teclado =1;
 	
+	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
+	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 }	
 	
 
 
 
-uint8_t Convertir_Keypad (uint16_t valor_adc){
 
-	if(valor_adc >= 795 && valor_adc < 810)
-	return 0;
-	else if(valor_adc >= 765 && valor_adc < 775)
-	return 1;
-	else if(valor_adc >= 900 && valor_adc < 910)
-	return 2;
-	else if(valor_adc >= 1010 && valor_adc < 1020)
-	return 3;
-	else if(valor_adc >= 745 && valor_adc < 760)
-	return 4;
-	else if(valor_adc >= 870 && valor_adc < 880)
-	return 5;
-	else if(valor_adc >= 975 && valor_adc < 985)
-	return 6;
-	else if(valor_adc >= 715 && valor_adc < 725)
-	return 7;
-	else if(valor_adc >= 835 && valor_adc < 850)
-	return 8;
-	else if(valor_adc >= 925 && valor_adc < 935){
-		return 9;
-	}
-	return 0;
-	else if(valor_adc >= 690 && valor_adc < 700) //(Asterisco)
-		return = 10;
-	else if(valor_adc >= 875 && valor_adc < 895) //(numeral)
-		return = 11;
-	
-}
-
-
-
-/*
-uint8_t Convertir_Keypad (uint16_t valor_adc){
-
-	if(valor_adc >= 795 && valor_adc < 810)	
-		return 0;
-	else if(valor_adc >= 765 && valor_adc < 775) 
-		return 1;
-	else if(valor_adc >= 900 && valor_adc < 910)
-		return 2;
-	else if(valor_adc >= 1010 && valor_adc < 1020)
-		return 3;
-	else if(valor_adc >= 745 && valor_adc < 760)
-		return 4;
-	else if(valor_adc >= 870 && valor_adc < 880)
-		return 5;
-	else if(valor_adc >= 975 && valor_adc < 985)
-		return 6;
-	else if(valor_adc >= 715 && valor_adc < 725)
-		return 7;
-	else if(valor_adc >= 835 && valor_adc < 850)
-		return 8;
-	else if(valor_adc >= 925 && valor_adc < 935){
-		return 9;
-	}
-	return 0;
-		
-//	else if(valor_adc >= 690 && valor_adc < 700) (Asterisco)
-//		return = 0b00101010; 
-//	else if(valor_adc >= 875 && valor_adc < 895) (numeral)
-//		return = 0b00100011;
-	
-}
-*/
 
 void USART_Transmit(unsigned char data) {
 	// Esperar a que el buffer de transmisión esté vacío
@@ -347,110 +305,3 @@ void USART_SendString(char* s) {
 		USART_Transmit(*s++);
 	}
 }
-
-
-
-/*
-	if(valor_adc >= 795 && valor_adc < 805)
-	return '0';
-	else if(valor_adc >= 765 && valor_adc < 770)
-	return '1';
-	else if(valor_adc >= 900 && valor_adc < 910)
-	return '2';
-	else if(valor_adc >= 1010 && valor_adc < 1020)
-	return '3';
-	else if(valor_adc >= 745 && valor_adc < 760)
-	return '4';
-	else if(valor_adc >= 870 && valor_adc < 880)
-	return '5';
-	else if(valor_adc >= 975 && valor_adc < 985)
-	return '6';
-	else if(valor_adc >= 715 && valor_adc < 720)
-	return '7';
-	else if(valor_adc >= 835 && valor_adc < 850)
-	return '8';
-	else if(valor_adc >= 925 && valor_adc < 935){
-		return '9';
-*/
-
-
-
-/*----------------------------------leer sensores 1er intento----------------------------------
-		if (Habilitar_LeerTemperatura == 1){
-			switch (Sensor_Temperatura){
-				
-				case 1:
-				cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-				ads1155_MSB_Config += 0x10;
-				Habilitar_LeerTemperatura = 0;
-				
-				if (ads1155_MSB_Config > 0xF1){
-					Sensor_Temperatura = 2;
-					ads1155_MSB_Config = 0xC1;
-				}
-				break;//case1
-
-case 2:
-cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-ads1155_MSB_Config += 0x10;
-Habilitar_LeerTemperatura = 0;
-if (ads1155_MSB_Config > 0xF1){
-	Sensor_Temperatura = 0;
-	ads1155_MSB_Config = 0xC1;
-}
-break;//case2
-
-default:
-Sensor_Temperatura = 0;
-ads1155_MSB_Config = 0xC1;
-*/
-
-
-
-/*-----------------prueba con joaco leer sensores----------------------------------------------------------------
- //for (ads1155_MSB_Config = 0xC1; ads1155_MSB_Config < 0x101; ads1155_MSB_Config += 0x10){
-
-ads1155_MSB_Config = 0xC1;
-
-for (char i = 0; i <4; i++){	 
-	 cofigurar_ads1115(ads1115_IP_VCC_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-
-	_delay_ms(5);
-
-	 temperatura = Leer_ads1115(ads1115_IP_VCC_write);
-	 
-	 //--------------cambio de canal--------------
-	 ads1155_MSB_Config += 0x10;
-	 
-	 if(ads1155_MSB_Config > 0xF1){
-		 ads1155_MSB_Config = 0xC1;
-	 }
-	 //-------------------------------------------
-	 
-	 sprintf(buffer, "temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
-	 USART_SendString(buffer);								// Enviar el texto por el puerto serie
- }
- -------------------------------------------------------------------------------------------------*/
-
-
-
-/*-------------------otro intento de leer sensores------------------------------------------------------------
-sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-USART_SendString(buffer);
-	temperatura = Leer_ads1115(ads1115_IP_GND_write);				
-//--------------cambio de canal--------------
-		ads1155_MSB_Config += 0x10;
-		
-		if(ads1155_MSB_Config > 0xF1){
-			ads1155_MSB_Config = 0xC1;	
-		}
-//-------------------------------------------	
-	sprintf(buffer, "valorReg: %u\r\n", ads1155_MSB_Config);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);
-
-	cofigurar_ads1115(ads1115_IP_GND_write, ads1115_Config_Reg, ads1155_MSB_Config, 0b11100000);
-
-
-	sprintf(buffer, "Temp: %u\r\n", temperatura);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);						// Enviar el texto por el puerto serie
-*/
