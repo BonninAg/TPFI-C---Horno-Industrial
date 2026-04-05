@@ -108,6 +108,7 @@ PROGMEM const char SetPoints[] = "Set Points ";
 void Pantalla_Principal_1 (void){
 	
 	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_Comando_LCD(LCD_Cursor_R);
 	Escribir_FraseFlash_LCD(General);
 	
 	Escribir_Comando_LCD(Linea2);
@@ -131,6 +132,7 @@ PROGMEM const char R_Actuadores[] = "Rang.Actuadores";
 void Pantalla_Principal_2 (void){
 	
 	Escribir_Comando_LCD(LCD_CLEAR);
+	Escribir_Comando_LCD(LCD_Cursor_R);
 	Escribir_FraseFlash_LCD(Tiempos);
 	
 	Escribir_Comando_LCD(Linea2);

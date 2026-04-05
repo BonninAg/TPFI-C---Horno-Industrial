@@ -21,10 +21,10 @@
 #define     LCD_CLEAR	0b00000001  // Limpia pantalla
 #define     LCD_HOME	0b00000010  // Retorno al inicio
 
-#define		Linea1			0b10000000
-#define		Linea2			0b11000000
-#define		Linea3			0b10010000
-#define		Linea4			0b11010000
+#define		Linea1			0b10000000 + 0x01
+#define		Linea2			0b11000000 + 0x01
+#define		Linea3			0b10010000 + 0x01
+#define		Linea4			0b11010000 + 0x01
 
 #define		Right_Arrow		0b01111110
 #define		Left_Arrow		0b01111111

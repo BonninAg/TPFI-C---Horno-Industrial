@@ -15,15 +15,29 @@
 char buffer[20];
 char imprimir [20];
 
+uint8_t deleteME;
+//uint16_t deleteME2 = 100;
+//uint16_t deleteME3 = 5;
 
 void USART_Transmit(unsigned char data);
 void USART_SendString(char* s);
 
 /*--------variables menu lcd---------*/
 char maq_estado_pantalla = 100;
-uint8_t Mostrar_Menu = 0;
+char cursor = 1;
+
+uint8_t Actualizar_Menu = 1;
 uint8_t no_repetir;
-//char menuPPL[] = 99, 100, 101, 102;
+
+#define Opcion1 1
+#define Opcion2 2
+#define Opcion3 3
+#define Opcion4 4
+#define	Linea1_	0b10000000
+#define	Linea2_	0b11000000
+#define	Linea3_	0b10010000
+#define	Linea4_	0b11010000
+PROGMEM const char espacio[] = " ";
 
 /*-----------------------------------------*/
 
@@ -145,10 +159,6 @@ PORTC &= ~(1 << PC0);
 USART_SendString("Fin Config\r\n");//************************************
  
  
-//1uint16_t deleteME = 500;
-//uint16_t deleteME2 = 100;
-//uint16_t deleteME3 = 5;
-
 
  /*
 for (int i = 0; i < 16; i++){
@@ -168,23 +178,58 @@ for (int i = 0; i < 16; i++){
 /*-------------------------------------------Teclado------------------------------------------*/	
 		if(Habilitar_Teclado == 1){
 			Habilitar_Teclado =0;		
-			Mostrar_Menu = Convertir_Keypad (valor_adc, &maq_estado_pantalla);
-
+			deleteME = Convertir_Keypad (valor_adc, &maq_estado_pantalla, &cursor);
+			Actualizar_Menu = 1;
 			
 				sprintf(imprimir, "maqEst: %u\r\n", maq_estado_pantalla);	// Convertir el valor numérico a una cadena de texto
 				USART_SendString(imprimir);						// Enviar el texto por el puerto serie
-			
+				sprintf(imprimir, "cursor: %u\r\n", cursor);	// Convertir el valor numérico a una cadena de texto
+				USART_SendString(imprimir);						// Enviar el texto por el puerto serie		
+					
 		}//teclado
 /*---------------------------------------------------------------------------------------------*/		
 	
 
 /*-------------------------------------------Pantallas------------------------------------------*/	
+if (Actualizar_Menu == 1){
+	Actualizar_Menu = 0;
+
 		if (maq_estado_pantalla == 100 || maq_estado_pantalla == 99){
 				maq_estado_pantalla=100;
 			if (no_repetir == 0){
 				no_repetir = 1;
 				Pantalla_Principal_1();
 			}
+		
+			if (cursor == 0)
+				cursor = Opcion1;
+			if (cursor == 5)
+				cursor = Opcion4;	
+				
+			Escribir_Comando_LCD(Linea1_);		
+			if (cursor == Opcion1){
+				Escribir_Caracter_LCD(Right_Arrow);			
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+				
+			Escribir_Comando_LCD(Linea2_);
+			if (cursor == Opcion2){	
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);	
+			
+			Escribir_Comando_LCD(Linea3_);		
+			if (cursor == Opcion3){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);	
+				
+			Escribir_Comando_LCD(Linea4_);	
+			if (cursor == Opcion4){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);		
+			
 		}
 		
 		if (maq_estado_pantalla == 101 || maq_estado_pantalla == 102){
@@ -193,7 +238,33 @@ for (int i = 0; i < 16; i++){
 				no_repetir = 0;
 				Pantalla_Principal_2();
 			}
+		
+			if (cursor == 0)
+			cursor = Opcion1;
+			if (cursor == 4)
+			cursor = Opcion3;
+			
+			Escribir_Comando_LCD(Linea1_);
+			if (cursor == Opcion1){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+			
+			Escribir_Comando_LCD(Linea2_);	
+			if (cursor == Opcion2){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+			
+			Escribir_Comando_LCD(Linea3_);	
+			if (cursor == Opcion3){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+
+		
 		}
+}//actualizar menu
 /*---------------------------------------------------------------------------------------------*/	
 
 /*-------------------------------------------Leer ads1115------------------------------------------*/	
@@ -282,7 +353,7 @@ ISR(INT1_vect){
 
 ISR(ADC_vect) {
 	valor_adc = ADC;  // lee ADCL + ADCH automáticamente
-	Habilitar_Teclado =1;
+	Habilitar_Teclado = 1;
 	
 	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
 	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
