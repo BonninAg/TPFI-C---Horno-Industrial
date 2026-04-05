@@ -23,22 +23,35 @@ void USART_Transmit(unsigned char data);
 void USART_SendString(char* s);
 
 /*--------variables menu lcd---------*/
-char maq_estado_pantalla = 100;
-char cursor = 1;
 
-uint8_t Actualizar_Menu = 1;
-uint8_t no_repetir;
+struct pantallaPPL {
+		uint8_t dni;
+		void(*graficos)(void);
+		char hijos [5];				//opciones
+		uint8_t opcionMax;
+		uint8_t opcionMin;			
+	};
+
+char maq_estado_pantalla = 100;
+uint8_t Menu = 0;
+uint8_t Cursor = 0;
+char Enter = 0;
+char Exit = 0;
+
+uint8_t Actualizar_Menu = 0;
+uint8_t no_repetir = 1;
+
+char renglon[4] = {0x80, 0xC0, 0x90, 0xD0};
 
 #define Opcion1 1
 #define Opcion2 2
 #define Opcion3 3
 #define Opcion4 4
-#define	Linea1_	0b10000000
-#define	Linea2_	0b11000000
-#define	Linea3_	0b10010000
-#define	Linea4_	0b11010000
+
 PROGMEM const char espacio[] = " ";
 
+
+uint8_t Estado_Planta =1;
 /*-----------------------------------------*/
 
 /*--------variables para el Keypad---------*/
@@ -66,6 +79,13 @@ volatile uint8_t Canal_Temp = 0;
 
 
 int main(void){
+	//dni, graficos, hijos, opcionesMax
+	struct pantallaPPL principal1 = {100, &Pantalla_Principal_1, {90, 80, 70, 60, 101}, 3, 0};
+	struct pantallaPPL principal2 = {101, &Pantalla_Principal_2, {50, 40, 30}, 2, 0};
+	
+	struct pantallaPPL avisos = {80, &Menu_Avisos, {0, 81, 82}, 2, 1};
+	struct pantallaPPL alarmas = {70, &Menu_Alarmas, {0, 71, 72, 73}, 3, 1};	   
+
    
  /*-------------------------- I2C -----------------------------*/
    DDRC &= ~((1<<PC4) | (1<<PC5));   //como entradas para el i2c
@@ -160,112 +180,220 @@ USART_SendString("Fin Config\r\n");//************************************
  
  
 
- /*
-for (int i = 0; i < 16; i++){
-Escribir_Comando_LCD(LCD_Shift_L);
-}
-for (int i = 0; i < 16; i++){
-	Escribir_Comando_LCD(LCD_Shift_L);
-}
- 
- Escribir_Texto_LCD("125");
- Escribir_Caracter_LCD(gradito);
- */
- 
 
  
     while (1) {
 /*-------------------------------------------Teclado------------------------------------------*/	
 		if(Habilitar_Teclado == 1){
 			Habilitar_Teclado =0;		
-			deleteME = Convertir_Keypad (valor_adc, &maq_estado_pantalla, &cursor);
-			Actualizar_Menu = 1;
+			deleteME = Convertir_Keypad (valor_adc, &Menu, &Cursor, &Enter, &Exit);
+			Actualizar_Menu = 0;
 			
-				sprintf(imprimir, "maqEst: %u\r\n", maq_estado_pantalla);	// Convertir el valor numérico a una cadena de texto
-				USART_SendString(imprimir);						// Enviar el texto por el puerto serie
-				sprintf(imprimir, "cursor: %u\r\n", cursor);	// Convertir el valor numérico a una cadena de texto
-				USART_SendString(imprimir);						// Enviar el texto por el puerto serie		
+				
 					
 		}//teclado
 /*---------------------------------------------------------------------------------------------*/		
 	
 
-/*-------------------------------------------Pantallas------------------------------------------*/	
-if (Actualizar_Menu == 1){
-	Actualizar_Menu = 0;
+while (Actualizar_Menu < 2) {
+	Actualizar_Menu += 1;
+	
 
-		if (maq_estado_pantalla == 100 || maq_estado_pantalla == 99){
-				maq_estado_pantalla=100;
-			if (no_repetir == 0){
-				no_repetir = 1;
-				Pantalla_Principal_1();
-			}
-		
-			if (cursor == 0)
-				cursor = Opcion1;
-			if (cursor == 5)
-				cursor = Opcion4;	
-				
-			Escribir_Comando_LCD(Linea1_);		
-			if (cursor == Opcion1){
-				Escribir_Caracter_LCD(Right_Arrow);			
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-				
-			Escribir_Comando_LCD(Linea2_);
-			if (cursor == Opcion2){	
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);	
-			
-			Escribir_Comando_LCD(Linea3_);		
-			if (cursor == Opcion3){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);	
-				
-			Escribir_Comando_LCD(Linea4_);	
-			if (cursor == Opcion4){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);		
-			
+	sprintf(imprimir, "maqEst: %u\r\n", maq_estado_pantalla);
+	USART_SendString(imprimir);
+/*
+	sprintf(imprimir, "cursor: %u\r\n", Cursor);
+	USART_SendString(imprimir);
+	sprintf(imprimir, "Menu: %u\r\n", Menu);
+	USART_SendString(imprimir);
+*/	
+/*-----------------------principal 1----------------------------------*/
+	if (maq_estado_pantalla == 100){
+
+		if (no_repetir)	{
+			no_repetir =0;
+		principal1.graficos();
+		}
+		if(Enter == 1){
+			Enter =0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.hijos[Cursor];	
 		}
 		
-		if (maq_estado_pantalla == 101 || maq_estado_pantalla == 102){
-			maq_estado_pantalla=101;
-			if (no_repetir == 1){
-				no_repetir = 0;
-				Pantalla_Principal_2();
-			}
+		if (Cursor == 255) Cursor = principal1.opcionMin;	
+		if (Cursor > (principal1.opcionMax)) Cursor = principal1.opcionMax;
 		
-			if (cursor == 0)
-			cursor = Opcion1;
-			if (cursor == 4)
-			cursor = Opcion3;
-			
-			Escribir_Comando_LCD(Linea1_);
-			if (cursor == Opcion1){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-			
-			Escribir_Comando_LCD(Linea2_);	
-			if (cursor == Opcion2){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-			
-			Escribir_Comando_LCD(Linea3_);	
-			if (cursor == Opcion3){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-
-		
+		for(uint8_t i = 0; i <= principal1.opcionMax; i++){
+			Escribir_Comando_LCD(renglon[i]);
+			Escribir_FraseFlash_LCD(espacio);
 		}
-}//actualizar menu
-/*---------------------------------------------------------------------------------------------*/	
+
+		Escribir_Comando_LCD(renglon[Cursor]);
+		Escribir_Caracter_LCD(Right_Arrow);
+
+	
+	}//maq100
+/*--------------------------------------------------------------------*/	
+/*------------------------principal 2---------------------------------*/
+	if(maq_estado_pantalla == 101){
+	
+		if (no_repetir)	{
+			no_repetir =0;
+		principal2.graficos();
+		}
+		if(Enter == 1){
+			Enter =0;
+			no_repetir =1;
+			maq_estado_pantalla = principal2.hijos[Cursor];
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.dni;
+		}
+		
+		if (Cursor == 255) Cursor = principal2.opcionMin;
+		if (Cursor > (principal2.opcionMax)) Cursor = principal2.opcionMax;
+		
+		for(uint8_t i = 0; i <= principal2.opcionMax; i++){
+			Escribir_Comando_LCD(renglon[i]);
+			Escribir_FraseFlash_LCD(espacio);
+		}
+		Escribir_Comando_LCD(renglon[Cursor]);
+		Escribir_Caracter_LCD(Right_Arrow);	
+	
+	}//maq101
+/*--------------------------------------------------------------------*/	
+
+
+
+/*------------------------General---------------------------------*/
+	if (maq_estado_pantalla == 90){
+		if (no_repetir)	{
+			no_repetir =0;
+			Menu_General(Estado_Planta);
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.dni;
+		}
+	}
+/*--------------------------------------------------------------------*/
+
+
+/*------------------------Avisos---------------------------------*/	
+	if (maq_estado_pantalla == 80){
+		if (no_repetir)	{
+			no_repetir =0;
+			avisos.graficos();
+		}
+		if(Enter == 1){
+			Enter =0;
+			no_repetir =1;
+			maq_estado_pantalla = avisos.hijos[Cursor];
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.dni;
+		}
+		if (Cursor < avisos.opcionMin) Cursor = avisos.opcionMin;
+		if (Cursor > (avisos.opcionMax)) Cursor = avisos.opcionMax;
+		
+		for(uint8_t i = 0; i <= avisos.opcionMax; i++){
+			Escribir_Comando_LCD(renglon[i]);
+			Escribir_FraseFlash_LCD(espacio);
+		}
+		Escribir_Comando_LCD(renglon[Cursor]);
+		Escribir_Caracter_LCD(Right_Arrow);
+	
+	}
+/*--------------------------------------------------------------------*/
+	
+/*------------------------avisos sensores---------------------------------*/
+	if (maq_estado_pantalla == 81){
+		if (no_repetir)	{
+			no_repetir =0;
+			Menu_Avisos_Sensores();
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = avisos.dni;
+		}
+	}
+/*--------------------------------------------------------------------*/
+/*------------------------avisos temperaturas---------------------------------*/	
+	if (maq_estado_pantalla == 82){
+		if (no_repetir)	{
+			no_repetir =0;
+			Menu_Avisos_Temperatura();
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = avisos.dni;
+		}
+	}
+/*--------------------------------------------------------------------*/	
+
+
+/*------------------------Alarmas---------------------------------*/
+if (maq_estado_pantalla == 70){
+	if (no_repetir)	{
+		no_repetir =0;
+		alarmas.graficos();
+	}
+	if(Enter == 1){
+		Enter =0;
+		no_repetir =1;
+		maq_estado_pantalla = alarmas.hijos[Cursor];
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = principal1.dni;
+	}
+	if (Cursor < alarmas.opcionMin) Cursor = alarmas.opcionMin;
+	if (Cursor > (alarmas.opcionMax)) Cursor = alarmas.opcionMax;
+	
+	for(uint8_t i = 0; i <= alarmas.opcionMax; i++){
+		Escribir_Comando_LCD(renglon[i]);
+		Escribir_FraseFlash_LCD(espacio);
+	}
+	Escribir_Comando_LCD(renglon[Cursor]);
+	Escribir_Caracter_LCD(Right_Arrow);
+
+}
+/*--------------------------------------------------------------------*/
+
+/*------------------------Alarmas Sensores---------------------------------*/
+/*--------------------------------------------------------------------*/
+
+/*------------------------Alarmas temperaturas---------------------------------*/
+if (maq_estado_pantalla == 72){
+	if (no_repetir)	{
+		no_repetir =0;
+		Menu_Alarmas_Temperatura();
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = alarmas.dni;
+	}
+}
+/*--------------------------------------------------------------------*/
+
+/*------------------------Alarmas PIDS---------------------------------*/
+/*--------------------------------------------------------------------*/
+
+
+}
+
+
+
+	
 
 /*-------------------------------------------Leer ads1115------------------------------------------*/	
 		if (Habilitar_LeerTemperatura == 1){
@@ -355,10 +483,10 @@ ISR(ADC_vect) {
 	valor_adc = ADC;  // lee ADCL + ADCH automáticamente
 	Habilitar_Teclado = 1;
 	
-	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
+//	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
+//	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 }	
-	
+
 
 
 
@@ -376,3 +504,87 @@ void USART_SendString(char* s) {
 		USART_Transmit(*s++);
 	}
 }
+
+
+
+
+
+
+/*-------------------------------------------Pantallas------------------------------------------*/	
+/*
+if (Actualizar_Menu == 1){
+	Actualizar_Menu = 0;
+
+		if (maq_estado_pantalla == 100 || maq_estado_pantalla == 99){
+				maq_estado_pantalla=100;
+			if (no_repetir == 0){
+				no_repetir = 1;
+				Pantalla_Principal_1();
+			}
+		
+			if (cursor == 0)
+				cursor = Opcion1;
+			if (cursor == 5)
+				cursor = Opcion4;	
+				
+			Escribir_Comando_LCD(Linea1_);		
+			if (cursor == Opcion1){
+				Escribir_Caracter_LCD(Right_Arrow);			
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+				
+			Escribir_Comando_LCD(Linea2_);
+			if (cursor == Opcion2){	
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);	
+			
+			Escribir_Comando_LCD(Linea3_);		
+			if (cursor == Opcion3){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);	
+				
+			Escribir_Comando_LCD(Linea4_);	
+			if (cursor == Opcion4){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);		
+			
+		}
+		
+		if (maq_estado_pantalla == 101 || maq_estado_pantalla == 102){
+			maq_estado_pantalla=101;
+			if (no_repetir == 1){
+				no_repetir = 0;
+				Pantalla_Principal_2();
+			}
+		
+			if (cursor == 0)
+			cursor = Opcion1;
+			if (cursor == 4)
+			cursor = Opcion3;
+			
+			Escribir_Comando_LCD(Linea1_);
+			if (cursor == Opcion1){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+			
+			Escribir_Comando_LCD(Linea2_);	
+			if (cursor == Opcion2){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+			
+			Escribir_Comando_LCD(Linea3_);	
+			if (cursor == Opcion3){
+				Escribir_Caracter_LCD(Right_Arrow);
+			}else
+				Escribir_FraseFlash_LCD(espacio);
+
+		
+		}
+}//actualizar menu
+*/
+/*---------------------------------------------------------------------------------------------*/

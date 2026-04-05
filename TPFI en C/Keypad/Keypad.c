@@ -10,7 +10,7 @@
 
 
 
-uint8_t Convertir_Keypad (uint16_t valor_adc, char* ptrMenu, char* ptrCursor){
+uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter ,char* ptrExit){
 
 	
 	if(valor_adc >= 900 && valor_adc < 910){
@@ -23,8 +23,11 @@ uint8_t Convertir_Keypad (uint16_t valor_adc, char* ptrMenu, char* ptrCursor){
 		return 4;	
 	}
 	
-	else if(valor_adc >= 870 && valor_adc < 880)
-	return 5;
+	else if(valor_adc >= 870 && valor_adc < 880){
+		*ptrEnter = 1;
+		return 5;	
+	}
+	
 	
 	else if(valor_adc >= 975 && valor_adc < 985){
 		*ptrMenu += 1;
@@ -36,6 +39,10 @@ uint8_t Convertir_Keypad (uint16_t valor_adc, char* ptrMenu, char* ptrCursor){
 		return 8;
 	}
 	
+	else if(valor_adc >= 875 && valor_adc < 895){ // #
+		*ptrExit = 1;
+		return 11;
+	}
 	else if(valor_adc >= 795 && valor_adc < 810)
 	return 0;
 	else if(valor_adc >= 765 && valor_adc < 775)
@@ -48,8 +55,7 @@ uint8_t Convertir_Keypad (uint16_t valor_adc, char* ptrMenu, char* ptrCursor){
 	return 9;
 	else if(valor_adc >= 690 && valor_adc < 700) // *
 	return 10;
-	else if(valor_adc >= 875 && valor_adc < 895) // #
-	return 11;
+	
 
 	return 255; // ningún botón
 }

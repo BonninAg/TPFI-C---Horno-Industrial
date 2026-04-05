@@ -15,7 +15,7 @@
 
 uint8_t tecla;
 
-uint8_t Convertir_Keypad(uint16_t valor_adc, char* ptrMenu, char* ptrCursor);
+uint8_t Convertir_Keypad(uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter, char* ptrExit);
 
 
 

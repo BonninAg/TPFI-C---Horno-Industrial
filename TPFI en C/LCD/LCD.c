@@ -41,7 +41,7 @@ void Iniciar_LCD (void){
 		Escribir_Comando_LCD(0b00001000); //display off
 		Escribir_Comando_LCD(LCD_CLEAR); //clear
 		Escribir_Comando_LCD(0b00000110); //entry mode set
-		Escribir_Comando_LCD(0b00001111); //display on		
+		Escribir_Comando_LCD(0b00001100); //display on		
 }
 
 void Escribir_Caracter_LCD (char letra){
@@ -170,13 +170,13 @@ void Menu_General (uint8_t indice){
 		Escribir_Comando_LCD(0xCB); //posición en pantalla.
 		Escribir_FraseFlash_LCD(A);
 		//variable
-		Escribir_Comando_LCD(Linea2);
+		Escribir_Comando_LCD(Linea2_);
 		Escribir_FraseFlash_LCD(Z2);
 		//variable
-		Escribir_Comando_LCD(Linea3);
+		Escribir_Comando_LCD(Linea3_);
 		Escribir_FraseFlash_LCD(Z3);
 
-Escribir_Comando_LCD(Linea4);
+Escribir_Comando_LCD(Linea4_);
 char *Puntero_Estado = (char*) pgm_read_word (&(Estado[indice])); //(char*) es el cast, le dice que el número lo trate como lugar de memoria, ej= va a leer 0x1024. Eso es un lugar de memoria, no un entero
 Escribir_FraseFlash_LCD(Puntero_Estado);
 
@@ -190,7 +190,7 @@ Escribir_FraseFlash_LCD(Puntero_Estado);
 PROGMEM const char Sensores[] = "Sensores";
 PROGMEM const char Temperatura[] = "Temperatura";
 void Menu_Avisos (void){
-	
+	Escribir_Comando_LCD(LCD_CLEAR);
 	Escribir_Comando_LCD(0x85); //posición en pantalla.
 	Escribir_FraseFlash_LCD(Avisos);
 	
@@ -205,14 +205,14 @@ void Menu_Avisos (void){
 }
 
 
-PROGMEM const char TT1[] = "TT1: ";
-PROGMEM const char TT2[] = "TT2: ";
-PROGMEM const char TT3[] = "TT3: ";
-PROGMEM const char TT4[] = "TT4: ";
-PROGMEM const char TT5[] = "TT5: ";
-PROGMEM const char TT6[] = "TT6: ";
-PROGMEM const char TT7[] = "TT7: ";
-PROGMEM const char TT8[] = "TT8: ";
+PROGMEM const char TT1[] = "TT1";
+PROGMEM const char TT2[] = "TT2";
+PROGMEM const char TT3[] = "TT3";
+PROGMEM const char TT4[] = "TT4";
+PROGMEM const char TT5[] = "TT5";
+PROGMEM const char TT6[] = "TT6";
+PROGMEM const char TT7[] = "TT7";
+PROGMEM const char TT8[] = "TT8";
 void Menu_Avisos_Sensores (void){
 	
 	Escribir_Comando_LCD(LCD_CLEAR);
@@ -222,21 +222,21 @@ void Menu_Avisos_Sensores (void){
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT5);
 	
-	Escribir_Comando_LCD(Linea2);
+	Escribir_Comando_LCD(Linea2_);
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT2);
 	Escribir_Comando_LCD(0xC9); //posición en pantalla.
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT6);
 	
-	Escribir_Comando_LCD(Linea3);
+	Escribir_Comando_LCD(Linea3_);
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT3);
 	Escribir_Comando_LCD(0x99); //posición en pantalla.
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT7);
 	
-	Escribir_Comando_LCD(Linea4);
+	Escribir_Comando_LCD(Linea4_);
 	Escribir_FraseFlash_LCD(W);
 	Escribir_FraseFlash_LCD(TT4);
 	Escribir_Comando_LCD(0xD9); //posición en pantalla.
@@ -263,17 +263,17 @@ void Menu_Avisos_Temperatura (void){
 	
 	Escribir_Comando_LCD(Linea2);
 	Escribir_FraseFlash_LCD(Tzona1);
-		Escribir_Comando_LCD(0xC1);
+		Escribir_Comando_LCD(0xC2);
 		Escribir_Caracter_LCD(gradito);
 	
 	Escribir_Comando_LCD(Linea3);
 	Escribir_FraseFlash_LCD(Tzona2);
-		Escribir_Comando_LCD(0x91);
+		Escribir_Comando_LCD(0x92);
 		Escribir_Caracter_LCD(gradito);
 	
 	Escribir_Comando_LCD(Linea4);
 	Escribir_FraseFlash_LCD(Tzona3);		
-		Escribir_Comando_LCD(0xD1);
+		Escribir_Comando_LCD(0xD2);
 		Escribir_Caracter_LCD(gradito);
 		
 	Escribir_Comando_LCD(0xDF); //posición en pantalla.
@@ -319,17 +319,17 @@ void Menu_Alarmas_Temperatura (void){
 	
 	Escribir_Comando_LCD(Linea2);
 	Escribir_FraseFlash_LCD(Tzona1);
-	Escribir_Comando_LCD(0xC1);
+	Escribir_Comando_LCD(0xC2);
 	Escribir_Caracter_LCD(gradito);
 	
 	Escribir_Comando_LCD(Linea3);
 	Escribir_FraseFlash_LCD(Tzona2);
-	Escribir_Comando_LCD(0x91);
+	Escribir_Comando_LCD(0x92);
 	Escribir_Caracter_LCD(gradito);
 	
 	Escribir_Comando_LCD(Linea4);
 	Escribir_FraseFlash_LCD(Tzona3);
-	Escribir_Comando_LCD(0xD1);
+	Escribir_Comando_LCD(0xD2);
 	Escribir_Caracter_LCD(gradito);
 	
 	Escribir_Comando_LCD(0xDF); //posición en pantalla.
@@ -486,7 +486,14 @@ void Menu_Tiempos (uint16_t varPreCal, uint16_t varCal, uint16_t varEnf){
 }
 
 
-
+PROGMEM const char TT1_[] = "TT1: ";
+PROGMEM const char TT2_[] = "TT2: ";
+PROGMEM const char TT3_[] = "TT3: ";
+PROGMEM const char TT4_[] = "TT4: ";
+PROGMEM const char TT5_[] = "TT5: ";
+PROGMEM const char TT6_[] = "TT6: ";
+PROGMEM const char TT7_[] = "TT7: ";
+PROGMEM const char TT8_[] = "TT8: ";
 void Menu_RangSensores (uint8_t menu, uint16_t varTTa, uint16_t varTTb, uint16_t varTTc){
 	
 		char arrayTTa[4];
@@ -503,19 +510,19 @@ void Menu_RangSensores (uint8_t menu, uint16_t varTTa, uint16_t varTTb, uint16_t
 	switch (menu){
 		case 1:
 			Escribir_Comando_LCD(Linea2);
-			Escribir_FraseFlash_LCD(TT1);
+			Escribir_FraseFlash_LCD(TT1_);
 			Escribir_Texto_LCD(arrayTTa);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);
 	
 			Escribir_Comando_LCD(Linea3);
-			Escribir_FraseFlash_LCD(TT2);
+			Escribir_FraseFlash_LCD(TT2_);
 			Escribir_Texto_LCD(arrayTTb);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);		
 		
 			Escribir_Comando_LCD(Linea4);
-			Escribir_FraseFlash_LCD(TT3);
+			Escribir_FraseFlash_LCD(TT3_);
 			Escribir_Texto_LCD(arrayTTc);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);		
@@ -525,19 +532,19 @@ void Menu_RangSensores (uint8_t menu, uint16_t varTTa, uint16_t varTTb, uint16_t
 		break;
 		case 2:
 			Escribir_Comando_LCD(Linea2);
-			Escribir_FraseFlash_LCD(TT4);
+			Escribir_FraseFlash_LCD(TT4_);
 			Escribir_Texto_LCD(arrayTTa);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);
 		
 			Escribir_Comando_LCD(Linea3);
-			Escribir_FraseFlash_LCD(TT5);
+			Escribir_FraseFlash_LCD(TT5_);
 			Escribir_Texto_LCD(arrayTTb);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);
 		
 			Escribir_Comando_LCD(Linea4);
-			Escribir_FraseFlash_LCD(TT6);
+			Escribir_FraseFlash_LCD(TT6_);
 			Escribir_Texto_LCD(arrayTTc);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);
@@ -550,13 +557,13 @@ void Menu_RangSensores (uint8_t menu, uint16_t varTTa, uint16_t varTTb, uint16_t
 		break;	
 		case 3:
 			Escribir_Comando_LCD(Linea2);
-			Escribir_FraseFlash_LCD(TT7);
+			Escribir_FraseFlash_LCD(TT7_);
 			Escribir_Texto_LCD(arrayTTa);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);
 		
 			Escribir_Comando_LCD(Linea3);
-			Escribir_FraseFlash_LCD(TT8);
+			Escribir_FraseFlash_LCD(TT8_);
 			Escribir_Texto_LCD(arrayTTb);
 			Escribir_Caracter_LCD(gradito);
 			Escribir_FraseFlash_LCD(C);

@@ -25,6 +25,11 @@
 #define		Linea2			0b11000000 + 0x01
 #define		Linea3			0b10010000 + 0x01
 #define		Linea4			0b11010000 + 0x01
+#define	Linea1_	0b10000000
+#define	Linea2_	0b11000000
+#define	Linea3_	0b10010000
+#define	Linea4_	0b11010000
+
 
 #define		Right_Arrow		0b01111110
 #define		Left_Arrow		0b01111111
