@@ -10,7 +10,7 @@
 
 
 
-uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter ,char* ptrExit){
+uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter ,char* ptrExit, uint8_t* ptrCambio_Menu){
 
 	
 	if(valor_adc >= 900 && valor_adc < 910){
@@ -19,7 +19,8 @@ uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCurs
 	}
 	
 	else if(valor_adc >= 745 && valor_adc < 760){
-		*ptrMenu -= 1;		
+		*ptrMenu -= 1;
+		*ptrCambio_Menu = 1;		
 		return 4;	
 	}
 	
@@ -31,6 +32,7 @@ uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCurs
 	
 	else if(valor_adc >= 975 && valor_adc < 985){
 		*ptrMenu += 1;
+		*ptrCambio_Menu = 1;
 		return 6;
 	}
 	

@@ -28,8 +28,10 @@ struct pantallaPPL {
 		uint8_t dni;
 		void(*graficos)(void);
 		char hijos [5];				//opciones
+		char hermanos [3];
 		uint8_t opcionMax;
-		uint8_t opcionMin;			
+		uint8_t opcionMin;
+		uint8_t hermanosMax;			
 	};
 
 char maq_estado_pantalla = 100;
@@ -40,13 +42,9 @@ char Exit = 0;
 
 uint8_t Actualizar_Menu = 0;
 uint8_t no_repetir = 1;
+uint8_t cambio_menu = 0;
 
 char renglon[4] = {0x80, 0xC0, 0x90, 0xD0};
-
-#define Opcion1 1
-#define Opcion2 2
-#define Opcion3 3
-#define Opcion4 4
 
 PROGMEM const char espacio[] = " ";
 
@@ -79,14 +77,16 @@ volatile uint8_t Canal_Temp = 0;
 
 
 int main(void){
-	//dni, graficos, hijos, opcionesMax
-	struct pantallaPPL principal1 = {100, &Pantalla_Principal_1, {90, 80, 70, 60, 101}, 3, 0};
-	struct pantallaPPL principal2 = {101, &Pantalla_Principal_2, {50, 40, 30}, 2, 0};
+								   //dni, graficos,				 hijos,				hermanos,    opcionMax,  opcionMin,  hermanosMax
+	struct pantallaPPL principal1 =		{100, &Pantalla_Principal_1, {90, 80, 70, 60},	{100, 101},		 3,			 0,			 1};
+	struct pantallaPPL principal2 =		{101, &Pantalla_Principal_2, {50, 40, 30},		{100, 101},		 2,			 0,			 1};
 	
-	struct pantallaPPL avisos = {80, &Menu_Avisos, {0, 81, 82}, 2, 1};
-	struct pantallaPPL alarmas = {70, &Menu_Alarmas, {0, 71, 72, 73}, 3, 1};	   
-
-   
+	struct pantallaPPL avisos =			{80,  &Menu_Avisos,			 {0, 81, 82},		{0},			 2,			 1,			 0};
+	struct pantallaPPL alarmas =		{70,  &Menu_Alarmas,		 {0, 71, 72, 73},	{0},		 	 3,			 1,			 0};	   
+	
+	struct pantallaPPL setPoint =		{60,  NULL,					 {0},				{60, 61, 62},	 0,			 0,			 2};
+	struct pantallaPPL R_Sensores =		{40,  NULL,					 {0},				{40, 41, 42},	 0,			 0,			 2};
+	struct pantallaPPL R_Actuadores =	{40,  NULL,					 {0},				{30, 31, 32},	 0,			 0,			 2};
    
   /*------------------PCInt PD5----------------------*/
   DDRD &= ~(1 << DDD5);     // PD5 como entrada
@@ -196,7 +196,7 @@ USART_SendString("Fin Config\r\n");//************************************
 /*-------------------------------------------Teclado------------------------------------------*/	
 		if(Habilitar_Teclado == 1){
 			Habilitar_Teclado =0;		
-			deleteME = Convertir_Keypad (valor_adc, &Menu, &Cursor, &Enter, &Exit);
+			deleteME = Convertir_Keypad (valor_adc, &Menu, &Cursor, &Enter, &Exit, &cambio_menu);
 			Actualizar_Menu = 0;
 			
 				
@@ -227,7 +227,9 @@ while (Actualizar_Menu < 2) {
 		if(Enter == 1){
 			Enter =0;
 			no_repetir =1;
-			maq_estado_pantalla = principal1.hijos[Cursor];	
+			maq_estado_pantalla = principal1.hijos[Cursor];
+			Cursor = 0;
+			Menu = 0;	
 		}
 		
 		if (Cursor == 255) Cursor = principal1.opcionMin;	
@@ -240,7 +242,15 @@ while (Actualizar_Menu < 2) {
 
 		Escribir_Comando_LCD(renglon[Cursor]);
 		Escribir_Caracter_LCD(Right_Arrow);
-
+		
+		
+		if (Menu == 255) Menu = 0;
+		if (Menu > (principal1.hermanosMax)) Menu = principal1.hermanosMax;	
+		if (cambio_menu){
+			cambio_menu =0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.hermanos[Menu];
+		}
 	
 	}//maq100
 /*--------------------------------------------------------------------*/	
@@ -255,6 +265,7 @@ while (Actualizar_Menu < 2) {
 			Enter =0;
 			no_repetir =1;
 			maq_estado_pantalla = principal2.hijos[Cursor];
+			Menu = 0;
 		}
 		if (Exit == 1){
 			Exit = 0;
@@ -272,6 +283,14 @@ while (Actualizar_Menu < 2) {
 		Escribir_Comando_LCD(renglon[Cursor]);
 		Escribir_Caracter_LCD(Right_Arrow);	
 	
+		if (Menu == 255) Menu = 0;
+		if (Menu > (principal1.hermanosMax)) Menu = principal1.hermanosMax;
+		if (cambio_menu){
+			cambio_menu =0;
+			no_repetir =1;
+			maq_estado_pantalla = principal1.hermanos[Menu];
+		}
+			
 	}//maq101
 /*--------------------------------------------------------------------*/	
 
@@ -379,7 +398,7 @@ if (maq_estado_pantalla == 70){
 /*--------------------------------------------------------------------*/
 
 /*------------------------Alarmas Sensores---------------------------------*/
-/*--------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------*/
 
 /*------------------------Alarmas temperaturas---------------------------------*/
 if (maq_estado_pantalla == 72){
@@ -396,10 +415,148 @@ if (maq_estado_pantalla == 72){
 /*--------------------------------------------------------------------*/
 
 /*------------------------Alarmas PIDS---------------------------------*/
+if (maq_estado_pantalla == 73){
+	if (no_repetir)	{
+		no_repetir =0;
+		Menu_Alarmas_PIDS();
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = alarmas.dni;
+	}
+}
 /*--------------------------------------------------------------------*/
 
+uint16_t SP_TempZ1 = 1500;
+uint16_t SP_CaudalZ1 = 200;
+uint16_t SP_TempZ2 = 750;
+uint16_t SP_CaudalZ2 = 400;
+uint16_t SP_CaudalZ3 = 500;
+uint16_t SP_VelocidadZ3 = 250;
 
+/*------------------------Set Points---------------------------------*/
+if (maq_estado_pantalla == 60){
+	if (Menu == 255) Menu = 0;
+	if (Menu > (setPoint.hermanosMax)) Menu = setPoint.hermanosMax;
+
+	if (cambio_menu){
+		cambio_menu =0;
+		no_repetir =1;
+	}
+	if (no_repetir)	{
+		no_repetir =0;
+		switch (Menu){
+			case 0:
+				Menu_SetPoints (Menu, SP_TempZ1, SP_CaudalZ1);
+			break;
+			case 1:
+				Menu_SetPoints (Menu, SP_TempZ2, SP_CaudalZ2);
+			break;
+			case 2:
+				Menu_SetPoints (Menu, SP_CaudalZ3, SP_VelocidadZ3);
+			break;
+		}	
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = principal1.dni;
+	}
 }
+/*--------------------------------------------------------------------*/
+
+uint16_t Tiempo_PreCalentamiento = 150;
+uint16_t Tiempo_Calentamiento = 413;
+uint16_t Tiempo_Enfriamiento = 523;
+
+/*------------------------Tiempos---------------------------------*/
+	if (maq_estado_pantalla == 50){
+		if (no_repetir)	{
+			no_repetir =0;
+			Menu_Tiempos(Tiempo_PreCalentamiento, Tiempo_Calentamiento, Tiempo_Enfriamiento);
+		}
+		if (Exit == 1){
+			Exit = 0;
+			no_repetir =1;
+			maq_estado_pantalla = principal2.dni;
+		}
+	}
+/*--------------------------------------------------------------------*/
+
+uint16_t TT1 = 500;
+uint16_t TT2 = 300;
+uint16_t TT3 = 200;
+uint16_t TT4 = 150;
+uint16_t TT5 = 800;
+uint16_t TT6 = 900;
+uint16_t TT7 = 1500;
+uint16_t TT8 = 647;
+
+/*------------------------Rangos Sensores---------------------------------*/
+if (maq_estado_pantalla == 40){
+	if (Menu == 255) Menu = 0;
+	if (Menu > (R_Sensores.hermanosMax)) Menu = R_Sensores.hermanosMax;
+
+	if (cambio_menu){
+		cambio_menu =0;
+		no_repetir =1;
+	}
+	if (no_repetir)	{
+		no_repetir =0;
+		switch (Menu){
+			case 0:
+			Menu_RangSensores (Menu, TT1, TT2, TT3);
+			break;
+			case 1:
+			Menu_RangSensores (Menu, TT4, TT5, TT6);
+			break;
+			case 2:
+			Menu_RangSensores (Menu, TT7, TT8, 0);
+			break;
+		}
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = principal2.dni;
+	}
+}
+/*-------------------------------------------------------------------------*/
+
+/*------------------------Rangos Actuadores---------------------------------*/
+if (maq_estado_pantalla == 30){
+	if (Menu == 255) Menu = 0;
+	if (Menu > (R_Actuadores.hermanosMax)) Menu = R_Actuadores.hermanosMax;
+
+	if (cambio_menu){
+		cambio_menu =0;
+		no_repetir =1;
+	}
+	if (no_repetir)	{
+		no_repetir =0;
+		switch (Menu){
+			case 0:
+			Menu_RangActuadores (Menu, TT1, TT2);
+			break;
+			case 1:
+			Menu_RangActuadores (Menu, TT4, TT5);
+			break;
+			case 2:
+			Menu_RangActuadores (Menu, TT7, TT8);
+			break;
+		}
+	}
+	if (Exit == 1){
+		Exit = 0;
+		no_repetir =1;
+		maq_estado_pantalla = principal2.dni;
+	}
+}
+/*-------------------------------------------------------------------------*/
+
+
+}//actualizar menu
 
 
 
@@ -442,8 +599,8 @@ ISR(TIMER1_COMPA_vect) {
 	Canal_Temp = 0;
 	
 for (char i = 0; i < 8; i++){
-	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);							// Enviar el texto por el puerto serie
+//	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
+//	USART_SendString(buffer);							// Enviar el texto por el puerto serie
 }	
 //------------------------------------------
 
@@ -503,9 +660,6 @@ ISR(ADC_vect) {
 //	sprintf(imprimir, "ADC: %u\r\n", valor_adc);	// Convertir el valor numérico a una cadena de texto
 //	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 }	
-
-
-
 
 
 
