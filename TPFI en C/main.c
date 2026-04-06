@@ -87,6 +87,16 @@ int main(void){
 	struct pantallaPPL alarmas = {70, &Menu_Alarmas, {0, 71, 72, 73}, 3, 1};	   
 
    
+   
+  /*------------------PCInt PD5----------------------*/
+  DDRD &= ~(1 << DDD5);     // PD5 como entrada
+  PORTD |= (1 << PORTD5);   // Pull-up habilitado
+  PCICR |= (1 << PCIE2);    // Habilita grupo PCINT[23:16]
+  PCMSK2 |= (1 << PCINT21);
+  
+  /*-------------------------------------------------*/ 
+   
+   
  /*-------------------------- I2C -----------------------------*/
    DDRC &= ~((1<<PC4) | (1<<PC5));   //como entradas para el i2c
     // Prescaler = 1 (TWPS = 0)
@@ -432,8 +442,8 @@ ISR(TIMER1_COMPA_vect) {
 	Canal_Temp = 0;
 	
 for (char i = 0; i < 8; i++){
-	//sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-	//USART_SendString(buffer);							// Enviar el texto por el puerto serie
+	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
+	USART_SendString(buffer);							// Enviar el texto por el puerto serie
 }	
 //------------------------------------------
 
@@ -455,22 +465,29 @@ for (char i = 0; i < 8; i++){
 ---------------------------------------------------*/
 }
 
+ISR(PCINT2_vect) {
+	if (!(PIND & (1 << PIND5))) {
+		/*----------------------------------Leer ads1115--------------------------------------*/
+		if (Canal_Temp == 1 || Canal_Temp == 2 || Canal_Temp == 3 || Canal_Temp == 4){
+
+			temperatura = Leer_ads1115(ads1115_IP_VCC_write);
+			Vector_Temperaturas [(Canal_Temp - 1)] = temperatura;
+			
+			temperatura = Leer_ads1115(ads1115_IP_GND_write);
+			Vector_Temperaturas [(Canal_Temp - 1) + 4] = temperatura;
+			
+			Habilitar_LeerTemperatura = 1;
+		}
+		/*------------------------------------------------------------------------------------*/
+	}
+}
+
+
 
 ISR(INT0_vect) {
 	//USART_SendString("int0\r\n");
 
-/*----------------------------------Leer ads1115--------------------------------------*/
-	if (Canal_Temp == 1 || Canal_Temp == 2 || Canal_Temp == 3 || Canal_Temp == 4){
 
-		temperatura = Leer_ads1115(ads1115_IP_VCC_write);
-		Vector_Temperaturas [(Canal_Temp - 1)] = temperatura;
-		
-		temperatura = Leer_ads1115(ads1115_IP_GND_write);
-		Vector_Temperaturas [(Canal_Temp - 1) + 4] = temperatura;
-	
-	Habilitar_LeerTemperatura = 1;	
-	}
-/*------------------------------------------------------------------------------------*/
 
 }
 
@@ -504,7 +521,6 @@ void USART_SendString(char* s) {
 		USART_Transmit(*s++);
 	}
 }
-
 
 
 
