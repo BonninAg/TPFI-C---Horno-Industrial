@@ -27,7 +27,7 @@ void USART_SendString(char* s);
 struct pantallaPPL {
 		uint8_t dni;
 		void(*graficos)(void);
-		char hijos [5];				//opciones
+		char hijos [4];				//opciones
 		char hermanos [3];
 		uint8_t opcionMax;
 		uint8_t opcionMin;
@@ -77,16 +77,18 @@ volatile uint8_t Canal_Temp = 0;
 
 
 int main(void){
-								   //dni, graficos,				 hijos,				hermanos,    opcionMax,  opcionMin,  hermanosMax
+									  //dni,	graficos,				hijos,			hermanos,		opcionMax,  opcionMin,  hermanosMax
 	struct pantallaPPL principal1 =		{100, &Pantalla_Principal_1, {90, 80, 70, 60},	{100, 101},		 3,			 0,			 1};
 	struct pantallaPPL principal2 =		{101, &Pantalla_Principal_2, {50, 40, 30},		{100, 101},		 2,			 0,			 1};
 	
 	struct pantallaPPL avisos =			{80,  &Menu_Avisos,			 {0, 81, 82},		{0},			 2,			 1,			 0};
-	struct pantallaPPL alarmas =		{70,  &Menu_Alarmas,		 {0, 71, 72, 73},	{0},		 	 3,			 1,			 0};	   
+	struct pantallaPPL alarmas =		{70,  &Menu_Alarmas,		 {0, 71, 72, 73},	{0},		 	 3,			 1,			 0};
 	
 	struct pantallaPPL setPoint =		{60,  NULL,					 {0},				{60, 61, 62},	 0,			 0,			 2};
 	struct pantallaPPL R_Sensores =		{40,  NULL,					 {0},				{40, 41, 42},	 0,			 0,			 2};
-	struct pantallaPPL R_Actuadores =	{40,  NULL,					 {0},				{30, 31, 32},	 0,			 0,			 2};
+	struct pantallaPPL R_Actuadores =	{40,  NULL,					 {0},				{30, 31, 32},	 0,			 0,			 2};   
+   
+   
    
   /*------------------PCInt PD5----------------------*/
   DDRD &= ~(1 << DDD5);     // PD5 como entrada

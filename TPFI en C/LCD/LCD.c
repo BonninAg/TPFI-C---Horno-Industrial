@@ -241,7 +241,7 @@ void Menu_Avisos_Sensores (void){
 	Escribir_FraseFlash_LCD(TT4);
 	Escribir_Comando_LCD(0xD9); //posición en pantalla.
 	Escribir_FraseFlash_LCD(W);
-	Escribir_FraseFlash_LCD(TT7);
+	Escribir_FraseFlash_LCD(TT8);
 
 	
 	Escribir_Comando_LCD(0xDF); //posición en pantalla.
