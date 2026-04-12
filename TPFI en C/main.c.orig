@@ -1220,9 +1220,27 @@ ISR(ADC_vect) {
 //	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 }	
 
+<<<<<<< HEAD
+
+
+void USART_Transmit(unsigned char data) {
 	
 	while (!(UCSR0A & (1 << UDRE0)));	// Esperar a que el buffer de transmisión esté vacío
 	UDR0 = data;						// Poner el dato en el registro, esto envía el byte
+}
+
+void USART_SendString(char* s) {
+	while (*s) {
+		USART_Transmit(*s++);
+	}
+}
+
+
+
+
+
+=======
+>>>>>>> 5859697dcf9f739ceceb7b0d94e718f4188b73dc
 /*-------------------------------------------Pantallas------------------------------------------*/	
 /*
 if (Actualizar_Menu == 1){

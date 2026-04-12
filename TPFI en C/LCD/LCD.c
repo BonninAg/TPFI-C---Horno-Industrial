@@ -6,8 +6,8 @@
  */ 
 
 #include "LCD.h"
-#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\PCF8574\PCF8574.h"
-
+//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\PCF8574\PCF8574.h"
+#include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\PCF8574\PCF8574.h"
 
 
 void Iniciar_LCD (void){
@@ -163,13 +163,13 @@ void Menu_General (uint8_t indice){
 	
 		Escribir_Comando_LCD(LCD_CLEAR);
 		Escribir_FraseFlash_LCD(Z1);
-		//variable
+		//variable PromedioZona_1
 		Escribir_Comando_LCD(0x8B); //posición en pantalla.
 		Escribir_FraseFlash_LCD(W);
-		//variable
+		//variable PromedioZona_2
 		Escribir_Comando_LCD(0xCB); //posición en pantalla.
 		Escribir_FraseFlash_LCD(A);
-		//variable
+		//variable PromedioZona_3
 		Escribir_Comando_LCD(Linea2_);
 		Escribir_FraseFlash_LCD(Z2);
 		//variable
@@ -375,7 +375,7 @@ PROGMEM const char C[] = "C";
 PROGMEM const char unidad_caudal[] = " m3/h";
 PROGMEM const char Velocidad[] = "Vel.C: ";
 PROGMEM const char unidad_Velocidad[] = " cm/s";
-void Menu_SetPoints (uint8_t zona, uint16_t varA, uint16_t varB){
+void Menu_SetPoints (uint8_t zona, uint16_t varA, uint8_t varB){
 	
 	char arrayA[5];
 	char arrayB[5];
