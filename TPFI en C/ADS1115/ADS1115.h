@@ -12,8 +12,8 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\I2C\I2C.h"
-
+//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\I2C\I2C.h"
+  #include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\I2C\I2C.h"
 
 //etiquetas con direcciones.
 #define ads1115_IP_GND_write  (0x48  << 1)      

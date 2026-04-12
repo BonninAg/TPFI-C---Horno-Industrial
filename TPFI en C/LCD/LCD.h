@@ -67,7 +67,7 @@ void Menu_Alarmas (void);
 void Menu_Alarmas_Temperatura (void);
 void Menu_Alarmas_PIDS(void);
 
-void Menu_SetPoints (uint8_t zona, uint16_t varTemp, uint16_t varCV);
+void Menu_SetPoints (uint8_t zona, uint16_t varTemp, uint8_t varCV);
 
 void Menu_Tiempos (uint16_t varPreCal, uint16_t varCal, uint16_t varEnf);
 
