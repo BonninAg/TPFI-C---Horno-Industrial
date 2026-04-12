@@ -601,9 +601,10 @@ ISR(TIMER1_COMPA_vect) {
 	Canal_Temp = 0;
 	
 for (char i = 0; i < 8; i++){
-//	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-//	USART_SendString(buffer);							// Enviar el texto por el puerto serie
-}	
+	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
+	USART_SendString(buffer);							// Enviar el texto por el puerto serie
+}
+USART_SendString("-------------\r\n");	
 //------------------------------------------
 
 
@@ -666,10 +667,9 @@ ISR(ADC_vect) {
 
 
 void USART_Transmit(unsigned char data) {
-	// Esperar a que el buffer de transmisión esté vacío
-	while (!(UCSR0A & (1 << UDRE0)));
-	// Poner el dato en el registro, esto envía el byte
-	UDR0 = data;
+	
+	while (!(UCSR0A & (1 << UDRE0)));	// Esperar a que el buffer de transmisión esté vacío
+	UDR0 = data;						// Poner el dato en el registro, esto envía el byte
 }
 
 void USART_SendString(char* s) {
