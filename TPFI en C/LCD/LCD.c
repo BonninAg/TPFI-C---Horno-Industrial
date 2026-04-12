@@ -166,16 +166,16 @@ void Menu_General (uint8_t indice){
 		//variable PromedioZona_1
 		Escribir_Comando_LCD(0x8B); //posición en pantalla.
 		Escribir_FraseFlash_LCD(W);
-		//variable PromedioZona_2
+		//variable 
 		Escribir_Comando_LCD(0xCB); //posición en pantalla.
 		Escribir_FraseFlash_LCD(A);
-		//variable PromedioZona_3
+		//variable 
 		Escribir_Comando_LCD(Linea2_);
 		Escribir_FraseFlash_LCD(Z2);
-		//variable
+		//variable PromedioZona_2
 		Escribir_Comando_LCD(Linea3_);
 		Escribir_FraseFlash_LCD(Z3);
-
+		//variable PromedioZona_3
 Escribir_Comando_LCD(Linea4_);
 char *Puntero_Estado = (char*) pgm_read_word (&(Estado[indice])); //(char*) es el cast, le dice que el número lo trate como lugar de memoria, ej= va a leer 0x1024. Eso es un lugar de memoria, no un entero
 Escribir_FraseFlash_LCD(Puntero_Estado);

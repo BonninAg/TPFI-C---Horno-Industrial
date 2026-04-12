@@ -1046,7 +1046,6 @@ for (char i = 0; i < 8; i++){
 				PORTD ^= (1 << PD7);
 				break;
 			}
-			
 			switch(Flag_Aviso_CW){
 				case 1:
 				PORTD |= (1 << PD6);
@@ -1058,20 +1057,6 @@ for (char i = 0; i < 8; i++){
 				break;
 			}
 		}
-
-		if(led_Ambar == 0 && Flag_Aviso_CW == 0 && Led_Rojo == 0){
-			switch(Led_Verde){
-				case 1:
-				// verde en alto PD6
-				PORTD |= (1 << PD6);
-				break;
-				case 2:
-				// cambio de estado PD6
-				PORTD ^= (1 << PD6);
-				break;
-			}
-		}
-
 		switch(Led_Rojo){
 			case 1:
 			// rojo en alto PD7
@@ -1081,10 +1066,19 @@ for (char i = 0; i < 8; i++){
 			PORTD ^= (1 << PD7);
 			break;
 		}	
-		
 	}
-	
-
+	if(led_Ambar == 0 && Flag_Aviso_CW == 0 && Led_Rojo == 0){
+		switch(Led_Verde){
+			case 1:
+			// verde en alto PD6
+			PORTD |= (1 << PD6);
+			break;
+			case 2:
+			// cambio de estado PD6
+			PORTD ^= (1 << PD6);
+			break;
+		}
+	}
 	if(Maquina_Estado > 20 && Enter_2 == 0 && Maquina_Estado != 26){
 		
 		if(tiempo == 2){
@@ -2385,7 +2379,6 @@ void Pantalla_5_Uart(){
 	#ifndef Flag_Norepetir_P5
 	#define Flag_Norepetir_P5
 	
-	
 	if (Flag_Norepetir == 0){
 		
 		enviar_frase(Borrar_Pantalla);
@@ -2394,10 +2387,6 @@ void Pantalla_5_Uart(){
 		Cursor_Fil_Col(20,33);
 		enviar_frase(Dato_Recibido);
 		Cursor_Fil_Col(3,0);
-		
-		if(Flecha_ESC == 1){
-			Flecha_P5 = 0;
-		}
 		
 		if(Flecha_P5 == 1){
 			enviar_frase(F_arrowLeft);
@@ -2522,18 +2511,7 @@ void Pantalla_5_Uart(){
 			
 			enviar_frase(F_Unid_Temp);
 			enviar_frase(Control);
-		}
-		
-		
-		if(Flecha_ESC == 1){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_Exit);
-			enviar_frase(F_arrowRigth);
-			Flecha_ESC = 0;
-			}else{
-			enviar_frase(F_Exit);
-		}
-		
+		}	
 		Flag_Norepetir = 1;
 	}
 	#endif
@@ -2542,13 +2520,7 @@ void Pantalla_5_Uart(){
 		
 		C_Enter = 0;
 		Cont_Enter++;
-		if(Escape == 1){
-			Flag_Norepetir = 0;
-			Maquina_Estado = 20;
-			Escape = 0;
-		}else{
-			
-			C_Enter = 0;
+		C_Enter = 0;
 			
 			if(Cont_Enter >= 2){
 				
@@ -2561,7 +2533,6 @@ void Pantalla_5_Uart(){
 				Ingresar_Valor = 1;
 				c = 0;
 				Flag_Norepetir = 255;
-			}
 		}
 	}
 	
@@ -2795,8 +2766,6 @@ void Pantalla_6_Uart(){
 			UART_enviar_string(Numero);
 		}
 		
-		
-		
 		if(Falla_Sens[0] != 0){
 			Cursor_Fil_Col(11,40);
 			enviar_frase(F_moniFalla);
@@ -2855,11 +2824,6 @@ void Pantalla_6_Uart(){
 		Flag_Norepetir = 1;
 	}
 	
-	if(Enter == 1){
-		
-		Enter = 0;
-		Cont_Enter++;
-		
 		if(Escape == 1){
 			Flag_Norepetir = 0;
 			Maquina_Estado = 20;
@@ -2867,8 +2831,6 @@ void Pantalla_6_Uart(){
 			Cont_Enter = 0;
 			Ingresar_Valor = 0;
 		}
-		
-	}
 }
 
 void adecuacion_sensores(){
