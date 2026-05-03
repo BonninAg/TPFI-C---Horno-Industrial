@@ -1002,11 +1002,11 @@ ISR(TIMER1_COMPA_vect) {
 	Habilitar_LeerTemperatura = 1;
 	Canal_Temp = 0;
 	
-for (char i = 0; i < 8; i++){
-	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-	USART_SendString(buffer);							// Enviar el texto por el puerto serie
-}
-USART_SendString("-------------\r\n");	
+//for (char i = 0; i < 8; i++){
+//	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
+//	USART_SendString(buffer);							// Enviar el texto por el puerto serie
+//}
+//USART_SendString("-------------\r\n");	
 //------------------------------------------
 
 
@@ -1214,87 +1214,6 @@ ISR(ADC_vect) {
 //	USART_SendString(imprimir);						// Enviar el texto por el puerto serie	
 }	
 
-	
-	while (!(UCSR0A & (1 << UDRE0)));	// Esperar a que el buffer de transmisión esté vacío
-	UDR0 = data;						// Poner el dato en el registro, esto envía el byte
-/*-------------------------------------------Pantallas------------------------------------------*/	
-/*
-if (Actualizar_Menu == 1){
-	Actualizar_Menu = 0;
-
-		if (maq_estado_pantalla == 100 || maq_estado_pantalla == 99){
-				maq_estado_pantalla=100;
-			if (no_repetir == 0){
-				no_repetir = 1;
-				Pantalla_Principal_1();
-			}
-		
-			if (cursor == 0)
-				cursor = Opcion1;
-			if (cursor == 5)
-				cursor = Opcion4;	
-				
-			Escribir_Comando_LCD(Linea1_);		
-			if (cursor == Opcion1){
-				Escribir_Caracter_LCD(Right_Arrow);			
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-				
-			Escribir_Comando_LCD(Linea2_);
-			if (cursor == Opcion2){	
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);	
-			
-			Escribir_Comando_LCD(Linea3_);		
-			if (cursor == Opcion3){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);	
-				
-			Escribir_Comando_LCD(Linea4_);	
-			if (cursor == Opcion4){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);		
-			
-		}
-		
-		if (maq_estado_pantalla == 101 || maq_estado_pantalla == 102){
-			maq_estado_pantalla=101;
-			if (no_repetir == 1){
-				no_repetir = 0;
-				Pantalla_Principal_2();
-			}
-		
-			if (cursor == 0)
-			cursor = Opcion1;
-			if (cursor == 4)
-			cursor = Opcion3;
-			
-			Escribir_Comando_LCD(Linea1_);
-			if (cursor == Opcion1){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-			
-			Escribir_Comando_LCD(Linea2_);	
-			if (cursor == Opcion2){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-			
-			Escribir_Comando_LCD(Linea3_);	
-			if (cursor == Opcion3){
-				Escribir_Caracter_LCD(Right_Arrow);
-			}else
-				Escribir_FraseFlash_LCD(espacio);
-
-		
-		}
-}//actualizar menu
-*/
-/*---------------------------------------------------------------------------------------------*/
 
 void UART_enviar_char(char c)
 {
@@ -3485,3 +3404,17 @@ uint16_t EEPROM_read_uint16(uint16_t address)
 }
 
 
+
+
+void USART_Transmit(unsigned char data) {
+	// Esperar a que el buffer de transmisi?n est? vac?o
+	while (!(UCSR0A & (1 << UDRE0)));
+	// Poner el dato en el registro, esto env?a el byte
+	UDR0 = data;
+}
+
+void USART_SendString(char* s) {
+	while (*s) {
+		USART_Transmit(*s++);
+	}
+}
