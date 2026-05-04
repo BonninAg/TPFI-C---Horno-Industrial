@@ -6,8 +6,9 @@
  */ 
 
 #include "LCD.h"
+#include "../PCF8574/PCF8574.h"
 //#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\PCF8574\PCF8574.h"
-#include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\PCF8574\PCF8574.h"
+//#include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\PCF8574\PCF8574.h"
 
 
 void Iniciar_LCD (void){
