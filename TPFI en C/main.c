@@ -84,7 +84,6 @@ void UART_enviar_string(char *str);
 void Cursor_Fil_Col(uint8_t fila, uint8_t columna);
 
 void Pantalla_0_Uart(void);
-void Pantalla_1_Uart(void);
 void Pantalla_2_Uart(void);
 void Pantalla_3_Uart(void);
 void Pantalla_4_Uart(void);
@@ -540,11 +539,7 @@ int main(void){
 		case 20:
 		Pantalla_0_Uart();
 		break;
-		
-		case 21:
-		Pantalla_1_Uart();
-		break;
-		
+			
 		case 22:
 		Pantalla_2_Uart();
 		break;
@@ -989,7 +984,7 @@ ISR(USART_RX_vect){
 			c--;
 		}
 		else{
-			if(c < 9){
+			if(c < 5){
 				if(c == 0){
 					enviar_frase(vacio_3);
 				}
@@ -1370,266 +1365,6 @@ void Pantalla_0_Uart(){
 			}else{
 			Flecha_P0++;
 			FinFLechas_P0();
-		}
-	}
-}
-
-void Pantalla_1_Uart(){
-	
-	#ifndef Flag_Norepetir_P1
-	#define Flag_Norepetir_P1
-	
-	if (Flag_Norepetir == 0){
-		
-		enviar_frase(Borrar_Pantalla);
-		
-		enviar_frase(F_Titulo_P1);
-		
-		Cursor_Fil_Col(20,33);
-		enviar_frase(Dato_Recibido);
-		Cursor_Fil_Col(3,0);
-		
-		if(Flecha_ESC == 1){
-			Flecha_P1 = 0;
-		}
-		if(Flecha_P1 == 1){
-			
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_spTemp_Z1);
-			
-			sprintf(Numero, "%d", SP_TempZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_spTemp_Z1);
-			
-			sprintf(Numero, "%d", SP_TempZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P1 == 2){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_spCV_Z1);
-			
-			sprintf(Numero, "%d", SP_CaudalZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_spCV_Z1);
-			
-			sprintf(Numero, "%d", SP_CaudalZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(Control);
-			enviar_frase(Control);
-		}
-		
-		
-		if(Flecha_P1 == 3){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_spTemp_Z2);
-			
-			sprintf(Numero, "%d", SP_TempZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_spTemp_Z2);
-			
-			sprintf(Numero, "%d", SP_TempZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P1 == 4){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_spCV_Z2);
-			
-			sprintf(Numero, "%d", SP_CaudalZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_spCV_Z2);
-
-			sprintf(Numero, "%d", SP_CaudalZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(Control);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P1 == 5){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_spCV_Z3);
-			
-			sprintf(Numero, "%d", SP_CaudalZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_spCV_Z3);
-			
-			sprintf(Numero, "%d", SP_CaudalZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_caudal);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P1 == 6){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_VelCinta);
-			
-			sprintf(Numero, "%d", SP_VelocidadZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_cinta);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_VelCinta);
-			
-			sprintf(Numero, "%d", SP_VelocidadZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_cinta);
-			enviar_frase(Control);
-		}
-		enviar_frase(Control_2);
-		
-		if(Flecha_ESC == 1){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_Exit);
-			enviar_frase(F_arrowRigth);
-			Flecha_ESC = 0;
-			}else{
-			enviar_frase(F_Exit);
-		}
-
-		
-		Flag_Norepetir = 1;
-	}
-	#endif
-	
-	Flag_Norepetir_P1
-
-	if(C_Enter == 1){
-		
-		C_Enter = 0;
-		Cont_Enter++;
-		
-		if(Escape == 1){
-			Flag_Norepetir = 0;
-			Maquina_Estado = 20;
-			Escape = 0;
-			Cont_Enter = 0;
-			Ingresar_Valor = 0;
-			}else{
-			
-			if(Cont_Enter >= 2){
-				Ingresar_Valor = 0;
-				Flag_Norepetir = 3;
-				Cont_Enter = 0;
-				valor = atoi((char*)Dato_RX);
-				Enter_2 = 0;
-				}else{
-				Ingresar_Valor = 1;
-				c = 0;
-				Flag_Norepetir = 255;
-			}
-		}
-	}
-	
-	if (Flecha_UP == 1){
-		if(Flecha_P1 == 1 || Flecha_P1 == 0 ){
-			Flecha_P1 = 6;
-			FinFLechas_P0();
-			}else{
-			Flecha_P1--;
-			FinFLechas_P0();
-		}
-	}
-	if(Flecha_LOW == 1){
-		if(Flecha_P1 == 6){
-			Flecha_P1 = 1;
-			FinFLechas_P0();
-			}else{
-			Flecha_P1++;
-			FinFLechas_P0();
-		}
-	}
-	
-	if(Flecha_ESC == 1){
-		Flag_Norepetir = 0;
-	}
-
-	if(Flag_Norepetir == 3){
-		Flag_Norepetir = 0;
-		switch(Flecha_P1){
-			
-			case 1:
-				SP_TempZ1 = valor;
-				guardar_eeprom(Temp_deseada_Z1,SP_TempZ1,2);
-				PIDs(1);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 2:
-				SP_CaudalZ1 = valor;
-				guardar_eeprom(Caudal_vol_deseado_Z1 ,SP_CaudalZ1,1);
-				PIDs(2);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 3:
-				SP_TempZ2 = valor;
-				guardar_eeprom(Temp_deseada_Z2,SP_TempZ2,2);
-				PIDs(3);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 4:
-				SP_CaudalZ2 = valor;
-				guardar_eeprom(Caudal_vol_deseado_Z2 ,SP_CaudalZ2,1);
-				PIDs(4);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 5:
-				SP_CaudalZ3 = valor;
-				guardar_eeprom(Caudal_vol_deseado_Z3 ,SP_CaudalZ3,2);
-				PIDs(5);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 6:
-				SP_VelocidadZ3 = valor;
-				guardar_eeprom(Vel_cinta_transp,SP_VelocidadZ3,1);
-				PIDs(6);
-				Flag_Norepetir = 0;
-			break;
 		}
 	}
 }
@@ -2695,17 +2430,18 @@ void Pantalla_6_Uart(){
 		}
 		
 	if(C_Enter == 1){
-		
 		C_Enter = 0;
-		Cont_Enter++;
 		
 		if(Escape == 1){
+		
 			Flag_Norepetir = 0;
 			Maquina_Estado = 20;
 			Escape = 0;
 			Cont_Enter = 0;
 			Ingresar_Valor = 0;
 			}else{
+			
+			Cont_Enter++;
 			
 			if(Cont_Enter >= 2){
 				Ingresar_Valor = 0;
@@ -2722,7 +2458,7 @@ void Pantalla_6_Uart(){
 	}
 	if(Flag_Norepetir == 3){
 		Flag_Norepetir = 0;
-		switch(Flecha_P1){
+		switch(Flecha_P6){
 		
 			case 1:
 			SP_TempZ1 = valor;
