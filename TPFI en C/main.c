@@ -49,7 +49,7 @@ char renglon[4] = {0x80, 0xC0, 0x90, 0xD0};
 
 PROGMEM const char espacio[] = " ";
 
-uint8_t Estado_Planta =1;
+uint8_t Estado_Planta = 1;
 /*-----------------------------------------*/
 
 /*--------variables para el Keypad---------*/
@@ -88,7 +88,6 @@ void Pantalla_1_Uart(void);
 void Pantalla_2_Uart(void);
 void Pantalla_3_Uart(void);
 void Pantalla_4_Uart(void);
-void Pantalla_5_Uart(void);
 void Pantalla_6_Uart(void);
 void FinFLechas_P0  (void);
 
@@ -163,7 +162,6 @@ PROGMEM const char vacio_4       	[]="   ";
 PROGMEM const char F_Error         	[]="\033[31m""\U0001F6AB""\033[0m""ERROR";
 PROGMEM const char F_NocumpleR     	[]="";
 
-
 PROGMEM const char F_Titulo_Menu_P0	[]="MEN\xC3\x9A CONFIGURACION\r\n\r\n";
 PROGMEM const char F_SetPoints		[]="Set Points";
 PROGMEM const char F_rActuadores	[]="Rangos Actuadores";
@@ -171,20 +169,19 @@ PROGMEM const char F_rSens			[]="Rangos Sensores";
 PROGMEM const char F_Tiempos		[]="Tiempos";
 PROGMEM const char F_Aviso_Alarma	[]="Avisos y Alarmas";
 
-
 PROGMEM const char F_Unid_Temp		[]=" ""\xC2\xB0""C";
 PROGMEM const char F_Unid_caudal	[]=" m\xC2\xB3/h";
-PROGMEM const char F_Unid_cinta		[]=" cm/s]";
+PROGMEM const char F_Unid_cinta		[]=" cm/s";
 PROGMEM const char F_Unid_Time		[]=" s";
 PROGMEM const char F_Unid_Porc      []=" %";
 
 PROGMEM const char F_Titulo_P1		[]="SET POINTs\r\n\r\n\r\n";
-PROGMEM const char F_spTemp_Z1		[]="Calefactor Zona 1: ";
-PROGMEM const char F_spCV_Z1		[]="Forzador   Zona 1: ";
-PROGMEM const char F_spTemp_Z2		[]="Calefactor Zona 2: ";
-PROGMEM const char F_spCV_Z2		[]="Forzador   Zona 2: ";
-PROGMEM const char F_spCV_Z3		[]="Forzador   Zona 3: ";
-PROGMEM const char F_VelCinta		[]="Velocidad  Cinta : ";
+PROGMEM const char F_spTemp_Z1		[]="H1 SP : ";
+PROGMEM const char F_spCV_Z1		[]="B1 SP : ";
+PROGMEM const char F_spTemp_Z2		[]="H2 SP : ";
+PROGMEM const char F_spCV_Z2		[]="B2 SP : ";
+PROGMEM const char F_spCV_Z3		[]="B3 SP : ";
+PROGMEM const char F_VelCinta		[]="C1 SP : ";
 
 PROGMEM const char F_Titulo_P2		[]="RANGOS ACTUADORES\r\n\r\n";
 PROGMEM const char F_H1				[]="H1:[";
@@ -193,20 +190,18 @@ PROGMEM const char F_H2				[]="H2:[";
 PROGMEM const char F_B2				[]="B2:[";
 PROGMEM const char F_B3				[]="B3:[";
 PROGMEM const char F_C1				[]="C1:[";
-PROGMEM const char F_Unid_caudal_2	[]=" m\xC2\xB3/h]";
-
+PROGMEM const char F_Unid_caudal_2	[]=" m\xC2\xB3/h";
 
 PROGMEM const char F_Titulo_P3		[]="RANGOS SENSORES\r\n\r\n";
-PROGMEM const char F_TT1			[]="TT1:[";
-PROGMEM const char F_TT2			[]="TT2:[";
-PROGMEM const char F_TT3			[]="TT3:[";
-PROGMEM const char F_TT4			[]="TT4:[";
-PROGMEM const char F_TT5			[]="TT5:[";
-PROGMEM const char F_TT6			[]="TT6:[";
-PROGMEM const char F_TT7			[]="TT7:[";
-PROGMEM const char F_TT8			[]="TT8:[";
-PROGMEM const char F_Unid_Temp_MQ3	[]="""\xC2\xB0""C]";
-
+PROGMEM const char F_TT1			[]="TT1: ";
+PROGMEM const char F_TT2			[]="TT2: ";
+PROGMEM const char F_TT3			[]="TT3: ";
+PROGMEM const char F_TT4			[]="TT4: ";
+PROGMEM const char F_TT5			[]="TT5: ";
+PROGMEM const char F_TT6			[]="TT6: ";
+PROGMEM const char F_TT7			[]="TT7: ";
+PROGMEM const char F_TT8			[]="TT8: ";
+PROGMEM const char F_Unid_Temp_MQ3	[]="""\xC2\xB0""C";
 
 PROGMEM const char F_Titulo_P4		[]="TIEMPOS\r\n\r\n";
 PROGMEM const char F_TimePrecal		[]="Precalentamiento: ";
@@ -215,28 +210,31 @@ PROGMEM const char F_TimeEnf		[]="Enfriamiento    : ";
 
 PROGMEM const char F_Titulo_P5		[]="AVISOS\r\n\r\n";
 PROGMEM const char F_Titulo_P5_2	[]="ALARMAS\r\n\r\n";
-PROGMEM const char F_WZ1			[]="T""\xC2\xB0"" Zona 1: ";
-PROGMEM const char F_WZ2			[]="T""\xC2\xB0"" Zona 2: ";
-PROGMEM const char F_WZ3			[]="T""\xC2\xB0"" Zona 3: ";
-
+PROGMEM const char F_A		    	[]="Alarma:  ";
+PROGMEM const char F_W   		    []="Aviso :  ";
 
 PROGMEM const char F_Titulo_P6		[]="Monitoreo";
 PROGMEM const char F_Titulo_P6_2	[]="MONITOREO\r\n\r\n";
-PROGMEM const char F_PromZ1			[]="T""\xC2\xB0""Promedio Zona 1:[";
-PROGMEM const char F_PromZ2			[]="T""\xC2\xB0""Promedio Zona 2:[";
-PROGMEM const char F_PromZ3			[]="T""\xC2\xB0""Promedio Zona 3:[";
+PROGMEM const char F_PromZ1			[]="ZONA 1";
+PROGMEM const char F_PromZ2			[]="ZONA 2";
+PROGMEM const char F_PromZ3			[]="ZONA 3";
+PROGMEM const char F_EstadoHorno	[]="Estado Horno: ";
+PROGMEM const char F_Estado	        []="Estado: ";
+PROGMEM const char F_Prom			[]="T""\xC2\xB0""Prom: ";
 
-PROGMEM const char F_Z1W			[]="Aviso T""\xC2\xB0"" Zona 1";
-PROGMEM const char F_Z1A			[]="Alarma T""\xC2\xB0"" Zona 1";
-PROGMEM const char F_Z2W			[]="Aviso T""\xC2\xB0"" Zona 2";
-PROGMEM const char F_Z2A			[]="Alarma T""\xC2\xB0"" Zona 2";
-PROGMEM const char F_Z3W			[]="Aviso T""\xC2\xB0"" Zona 3";
-PROGMEM const char F_Z3A			[]="Alarma T""\xC2\xB0"" Zona 3";
+PROGMEM const char F_Z1W			[]="Aviso T""\xC2\xB0";
+PROGMEM const char F_Z1A			[]="Alarma T""\xC2\xB0";
+PROGMEM const char F_Z2W			[]="Aviso T""\xC2\xB0";
+PROGMEM const char F_Z2A			[]="Alarma T""\xC2\xB0";
+PROGMEM const char F_Z3W			[]="Aviso T""\xC2\xB0";
+PROGMEM const char F_Z3A			[]="Alarma T""\xC2\xB0";
 
 PROGMEM const char F_Normal			[]="Normal";
 PROGMEM const char F_Emergencia		[]="Parada Emergencia";
 PROGMEM const char F_Controlada		[]="Parada Controlada";
 PROGMEM const char F_Arranque		[]="Secuencia Arranque";
+PROGMEM const char F_Regimen		[]="Regimen";
+PROGMEM const char F_Apagado		[]="Apagado";
 
 PROGMEM const char F_Fase     		[]="Fase: ";
 PROGMEM const char F_Tiempo		    []="Tiempo: ";
@@ -254,12 +252,15 @@ PROGMEM const char F_PID4		    []="PID B2";
 PROGMEM const char F_PID5		    []="PID B3";
 PROGMEM const char F_PID6		    []="PID C3";
 
-uint8_t Maquina_Estado = 20;
+uint8_t Maquina_Estado = 26;
 volatile uint8_t dato;
 volatile char Dato_RX[9];
 volatile uint8_t c = 0;
 volatile uint8_t Flecha_LOW = 0;
 volatile uint8_t Flecha_UP = 0;
+volatile uint8_t Flecha_Right = 0;
+volatile uint8_t Flecha_Left = 0;
+
 char Numero[5];
 
 uint8_t Flag_Norepetir = 0;
@@ -519,7 +520,7 @@ int main(void){
 
     // USART_SendString("Fin Config\r\n");//************************************ ACÁ CAMBIE A COMENTARIO LO DE LA USARTT
 	leer_eeprom();
- 
+	Chequear_PIDs_Fallas();
     while (1) {
 	
 	if(Flag_Secuencia_Arranque == 1){
@@ -556,16 +557,12 @@ int main(void){
 		Pantalla_4_Uart();
 		break;
 		
-		case 25:
-		Pantalla_5_Uart();
-		break;
-		
 		case 26:
 		Pantalla_6_Uart();
 		break;
 		
 	}
-	Chequear_PIDs_Fallas();
+	
 	Signals_Habilitacion();
 	
 /*-------------------------------------------Teclado------------------------------------------*/	
@@ -951,18 +948,27 @@ ISR(USART_RX_vect){
 	{
 		
 		case 'A':
-		case 'D':
 		Flecha_UP = 1;
 		Escape = 0;
 		Flecha_ESC = 0;
 		break;
 		
+		case 'D':
+		Flecha_Left = 1;
+		Escape = 0;
+		Flecha_ESC = 0;
+		break;
+		
 		case 'B':
-		case 'C':
 		Flecha_LOW = 1;
 		Escape = 0;
 		Flecha_ESC = 0;
+		break;
 		
+		case 'C':
+		Flecha_Right = 1;
+		Escape = 0;
+		Flecha_ESC = 0;
 		break;
 		
 		case 13:
@@ -1004,7 +1010,7 @@ ISR(TIMER1_COMPA_vect) {
 	
 //for (char i = 0; i < 8; i++){
 //	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-//	USART_SendString(buffer);							// Enviar el texto por el puerto serie
+	//USART_SendString(buffer);							// Enviar el texto por el puerto serie
 //}
 //USART_SendString("-------------\r\n");	
 //------------------------------------------
@@ -1033,7 +1039,7 @@ ISR(TIMER1_COMPA_vect) {
 	
 	Flag_adecuacion_sensores = 1;
 	tiempo++;
-	if(Estado_Horno == 2){
+	if(Estado_Horno == 2 || Estado_Horno == 4){
 		
 		if(Led_Rojo == 0){
 			
@@ -1068,7 +1074,7 @@ ISR(TIMER1_COMPA_vect) {
 			break;
 		}	
 	}
-	if(led_Ambar == 0 && Flag_Aviso_CW == 0 && Led_Rojo == 0){
+	if(led_Ambar == 0 && Flag_Aviso_CW == 0 && Led_Rojo == 0 && Estado_Horno!=0){
 		switch(Led_Verde){
 			case 1:
 			// verde en alto PD6
@@ -1080,48 +1086,49 @@ ISR(TIMER1_COMPA_vect) {
 			break;
 		}
 	}
-	if(Maquina_Estado > 20 && Enter_2 == 0 && Maquina_Estado != 26){
-		
-		if(tiempo == 2){
-			Cursor_Fil_Col(20,49);
-			enviar_frase(guion);
-		}
-		else{
-			Cursor_Fil_Col(20,49);
-			enviar_frase(vacio);
-		}
-	}
-	
+
 	if(tiempo == 2){
 		tiempo = 0;
 	}
 }
 
-ISR(PCINT0_vect)
-{
-	uint8_t estado_actual = PINB;
-	uint8_t mask = 0x3F;
-	
-	// Detectar cambios
-	uint8_t cambios = (estado_actual ^ estado_anterior_B) & mask;
+ISR(PCINT0_vect){
+	    uint8_t estado_actual = PINB;
+	    uint8_t mask = 0x3F;
 
-	// Detectar los que bajaron a 0 (fallas)
-	uint8_t bajaron_a_0 = cambios & (~estado_actual);
+	    // Detectar cambios
+	    uint8_t cambios = (estado_actual ^ estado_anterior_B) & mask;
 
-	if (bajaron_a_0)
-	{
-		Flag_Parada_Emergencia = 1;
+	    // Flanco de bajada (1 -> 0)
+	    uint8_t bajaron_a_0 = cambios & (~estado_actual);
 
-		if (bajaron_a_0 & (1 << PB0)) Vec_PIDs[0] = 1;
-		if (bajaron_a_0 & (1 << PB1)) Vec_PIDs[1] = 1;
-		if (bajaron_a_0 & (1 << PB2)) Vec_PIDs[2] = 1;
-		if (bajaron_a_0 & (1 << PB3)) Vec_PIDs[3] = 1;
-		if (bajaron_a_0 & (1 << PB4)) Vec_PIDs[4] = 1;
-		if (bajaron_a_0 & (1 << PB5)) Vec_PIDs[5] = 1;
-	}
+	    // Flanco de subida (0 -> 1)
+	    uint8_t subieron_a_1 = cambios & estado_actual;
 
-	estado_anterior_B = estado_actual;
-	
+	    // --- FALLAS (1 -> 0) ---
+	    if (bajaron_a_0 & (1 << PB0)) Vec_PIDs[0] = 1;
+	    if (bajaron_a_0 & (1 << PB1)) Vec_PIDs[1] = 1;
+	    if (bajaron_a_0 & (1 << PB2)) Vec_PIDs[2] = 1;
+	    if (bajaron_a_0 & (1 << PB3)) Vec_PIDs[3] = 1;
+	    if (bajaron_a_0 & (1 << PB4)) Vec_PIDs[4] = 1;
+	    if (bajaron_a_0 & (1 << PB5)) Vec_PIDs[5] = 1;
+
+	    // --- RECUPERACIÓN (0 -> 1) ---
+	    if (subieron_a_1 & (1 << PB0)) Vec_PIDs[0] = 0;
+	    if (subieron_a_1 & (1 << PB1)) Vec_PIDs[1] = 0;
+	    if (subieron_a_1 & (1 << PB2)) Vec_PIDs[2] = 0;
+	    if (subieron_a_1 & (1 << PB3)) Vec_PIDs[3] = 0;
+	    if (subieron_a_1 & (1 << PB4)) Vec_PIDs[4] = 0;
+	    if (subieron_a_1 & (1 << PB5)) Vec_PIDs[5] = 0;
+
+	    // --- PARADA DE EMERGENCIA ---
+	    // Si al menos uno está en falla ? activar
+	    if ((~estado_actual) & mask)
+	    Flag_Parada_Emergencia = 1;
+	    else
+	    Flag_Parada_Emergencia = 0;
+		Estado_Horno = 0;
+	    estado_anterior_B = estado_actual;
 }
 
 ISR(PCINT1_vect)
@@ -1185,13 +1192,17 @@ ISR(PCINT2_vect){
 		{
 			if( (estado_actual_D & (1 << PD4)) == 0 )
 			{
+				if(Estado_Horno == 0){
 				Flag_Secuencia_Arranque = 1;
-				//bajo a 0
+				//bajo a 0	
+				}
 			}
 			else
 			{
-				Flag_Parada_Controlada = 1;
-				//subio a 1
+				if(Estado_Horno == 2){
+					Flag_Parada_Controlada = 1;
+					//subio a 1
+				}
 			}
 		}
 		estado_anterior_D = estado_actual_D;
@@ -1252,10 +1263,11 @@ void FinFLechas_P0(){
 	Flag_Norepetir = 0;
 	Flecha_LOW = 0;
 	Flecha_UP = 0;
+	Flecha_Right = 0;
+	Flecha_Left = 0;
 	Cont_Enter = 0;
 	Ingresar_Valor = 0;
 	Flecha_ESC = 0;
-	
 }
 
 void Pantalla_0_Uart(){
@@ -2297,398 +2309,301 @@ void Pantalla_4_Uart(){
 	}
 }
 
-void Pantalla_5_Uart(){
-	
-	#ifndef Flag_Norepetir_P5
-	#define Flag_Norepetir_P5
-	
-	if (Flag_Norepetir == 0){
-		
-		enviar_frase(Borrar_Pantalla);
-		enviar_frase(F_Titulo_P5);
-		
-		Cursor_Fil_Col(20,33);
-		enviar_frase(Dato_Recibido);
-		Cursor_Fil_Col(3,0);
-		
-		if(Flecha_P5 == 1){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ1);
-			
-			sprintf(Numero, "%d", Aviso_TZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ1);
-			
-			sprintf(Numero, "%d", Aviso_TZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P5 == 2){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ2);
-			
-			sprintf(Numero, "%d", Aviso_TZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ2);
-			
-			sprintf(Numero, "%d", Aviso_TZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(Control);
-		}
-		
-		
-		if(Flecha_P5 == 3){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ3);
-			
-			sprintf(Numero, "%d", Aviso_TZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ3);
-			
-			sprintf(Numero, "%d", Aviso_TZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(Control);
-			
-		}
-		enviar_frase(Control);
-		enviar_frase(F_Titulo_P5_2);
-		
-		if(Flecha_P5 == 4){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ1);
-			
-			sprintf(Numero, "%d", Alarma_TZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ1);
-			
-			sprintf(Numero, "%d", Alarma_TZ1);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(Control);
-		}
-		
-		if(Flecha_P5 == 5){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ2);
-			
-			sprintf(Numero, "%d", Alarma_TZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ2);
-			
-			sprintf(Numero, "%d", Alarma_TZ2);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Porc);
-			enviar_frase(Control);
-		}
-		
-		
-		if(Flecha_P5 == 6){
-			enviar_frase(F_arrowLeft);
-			enviar_frase(F_WZ3);
-			
-			sprintf(Numero, "%d", Alarma_TZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(F_arrowRigth);
-			enviar_frase(Control);
-			}else{
-			enviar_frase(F_WZ3);
-			
-			sprintf(Numero, "%d", Alarma_TZ3);
-			UART_enviar_string(Numero);
-			
-			enviar_frase(F_Unid_Temp);
-			enviar_frase(Control);
-		}	
-		Flag_Norepetir = 1;
-	}
-	#endif
-	
-	if(C_Enter == 1){
-		
-		C_Enter = 0;
-		Cont_Enter++;
-		C_Enter = 0;
-			
-			if(Cont_Enter >= 2){
-				
-				Ingresar_Valor = 0;
-				Flag_Norepetir = 3;
-				Cont_Enter = 0;
-				Enter_2 = 0;
-				valor = atoi((char*)Dato_RX);
-				}else{
-				Ingresar_Valor = 1;
-				c = 0;
-				Flag_Norepetir = 255;
-		}
-	}
-	
-	if (Flecha_UP == 1){
-		if(Flecha_P5 == 1 || Flecha_P5 == 0 ){
-			Flecha_P5 = 6;
-			FinFLechas_P0();
-			}else{
-			Flecha_P5--;
-			FinFLechas_P0();
-		}
-	}
-	if(Flecha_LOW == 1){
-		if(Flecha_P5 == 6){
-			Flecha_P5 = 1;
-			FinFLechas_P0();
-			}else{
-			Flecha_P5++;
-			FinFLechas_P0();
-		}
-	}
-	
-	if(Flecha_ESC == 1){
-		Flag_Norepetir = 0;
-	}
-	
-	
-	if(Flag_Norepetir == 3){
-		
-		switch(Flecha_P5){
-			
-			case 1:
-				valor = (valor*SP_TempZ1)/100+SP_TempZ1;
-				Aviso_TZ1 = valor;
-				guardar_eeprom(Aviso_temp_z1,valor,1);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 2:
-				valor = (valor*SP_TempZ2)/100+SP_TempZ2;
-				Aviso_TZ2  = valor;
-				guardar_eeprom(Aviso_temp_z2,valor,1);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 3:
-				Aviso_TZ3 = valor;
-				guardar_eeprom(Aviso_temp_z3,valor,2);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 4:
-				valor = (valor*SP_TempZ1)/100+SP_TempZ1;
-				Alarma_TZ1 = valor;
-				guardar_eeprom(Alarma_temp_z1,valor,1);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 5:
-			valor = (valor*SP_TempZ2)/100+SP_TempZ2;
-				Alarma_TZ2 = valor;
-				guardar_eeprom(Alarma_temp_z2,valor,1);
-				Flag_Norepetir = 0;
-			break;
-			
-			case 6:
-				Alarma_TZ3 = valor;
-				guardar_eeprom(Alarma_temp_z3,valor,2);
-				Flag_Norepetir = 0;
-			break;
-		}
-	}
-}
-
 void Pantalla_6_Uart(){
 	
 	if (Flag_Norepetir == 0){
 		enviar_frase(Borrar_Pantalla);
-		enviar_frase(F_Titulo_P6_2);
-		
+		Cursor_Fil_Col(0,28);
+		enviar_frase(F_Titulo_P6_2);	
 
-		enviar_frase(F_PromZ1);
-		sprintf(Numero, "%4d", PromedioZona_1);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+	Cursor_Fil_Col(3,9);
+	enviar_frase(F_EstadoHorno);
 
-		enviar_frase(F_PromZ2);
-		sprintf(Numero, "%4d", PromedioZona_2);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
-
-		enviar_frase(F_PromZ3);
-		sprintf(Numero, "%4d", PromedioZona_3);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+	switch(Estado_Horno){
 	
-		enviar_frase(F_TT1);
-		sprintf(Numero, "%4d", Vec_SsT[0]);
+		case 0:
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Apagado);
+		break;
+	
+		case 1:
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Arranque);
+	
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Fase);
+		sprintf(Numero, "%d", Fase);
 		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
-		
-		enviar_frase(F_TT2);
-		sprintf(Numero, "%4d", Vec_SsT[1]);
+	
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Tiempo);
+		sprintf(Numero, "%d", Cont_Tiempo);
 		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
-		
-		enviar_frase(F_TT3);
-		sprintf(Numero, "%4d", Vec_SsT[2]);
+		break;
+	
+		case 2:
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Regimen);
+		break;
+	
+		case 3:
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Controlada);
+	
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Fase);
+		sprintf(Numero, "%d", Fase);
 		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
-		
-		enviar_frase(F_TT4);
-		sprintf(Numero, "%4d", Vec_SsT[3]);
+	
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Tiempo);
+		sprintf(Numero, "%d", Cont_Tiempo);
 		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+		break;
+	
+		case 4:
+		Cursor_Fil_Col(3,24);
+		enviar_frase(F_Emergencia);
+		break;
+	}
 
-		enviar_frase(F_TT5);
-		sprintf(Numero, "%4d", Vec_SsT[4]);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+	Cursor_Fil_Col(5,12);
+	enviar_frase(F_PromZ1);
+	Cursor_Fil_Col(5,35);
+	enviar_frase(F_PromZ2);
+	Cursor_Fil_Col(5,58);
+	enviar_frase(F_PromZ3);
 
-		enviar_frase(F_TT6);
-		sprintf(Numero, "%4d", Vec_SsT[5]);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+	Cursor_Fil_Col(7,7);
+	enviar_frase(F_Estado);
+	switch(Estado_Actual[0]){
+		case 1:
+		Cursor_Fil_Col(7,15);
+		enviar_frase(F_Z1W);
+		break;
+		
+		case 2:
+		Cursor_Fil_Col(7,15);
+		enviar_frase(F_Z1A);
+		break;
+		
+		case 0:
+		Cursor_Fil_Col(7,15);
+		enviar_frase(F_Normal);
+		break;
+	}
+	
+	Cursor_Fil_Col(8,7);
+	enviar_frase(F_Prom);
+	sprintf(Numero, "%4d", PromedioZona_1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	
+	Cursor_Fil_Col(7,31);
+	enviar_frase(F_Estado);
+	switch(Estado_Actual[1]){
+		case 1:
+		Cursor_Fil_Col(7,39);
+		enviar_frase(F_Z2W);
+		break;
+		
+		case 2:
+		Cursor_Fil_Col(7,39);
+		enviar_frase(F_Z2A);
+		break;
+		
+		case 0:
+		Cursor_Fil_Col(7,39);
+		enviar_frase(F_Normal);
+		break;
+	}
 
-		enviar_frase(F_TT7);
-		sprintf(Numero, "%4d", Vec_SsT[6]);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
-		enviar_frase(Control);
+	Cursor_Fil_Col(8,31);
+	enviar_frase(F_Prom);
+	sprintf(Numero, "%4d", PromedioZona_2);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	
+	Cursor_Fil_Col(7,54);
+	enviar_frase(F_Estado);
+	switch(Estado_Actual[2]){
+		case 1:
+		Cursor_Fil_Col(7,62);
+		enviar_frase(F_Z3W);
+		break;
+		
+		case 2:
+		Cursor_Fil_Col(7,62);
+		enviar_frase(F_Z3A);
+		break;
+		
+		case 0:
+		Cursor_Fil_Col(7,62);
+		enviar_frase(F_Normal);
+		break;
+	}
 
-		enviar_frase(F_TT8);
-		sprintf(Numero, "%4d", Vec_SsT[7]);
-		UART_enviar_string(Numero);
-		enviar_frase(F_Unid_Temp_MQ3);
+	Cursor_Fil_Col(8,54);
+	enviar_frase(F_Prom);
+	sprintf(Numero, "%4d", PromedioZona_3);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	
+//------------------------------COLUMNA 1---------------------------------------------//
+	Cursor_Fil_Col(9,7);
+	if(Flecha_P6 == 1){Cursor_Fil_Col(9,4);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_spTemp_Z1);
+	sprintf(Numero, "%4d", SP_TempZ1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	if(Flecha_P6 == 1){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(11,7);
+	if(Flecha_P6 == 2){Cursor_Fil_Col(11,3);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_spCV_Z1);
+	sprintf(Numero, "%4d", SP_CaudalZ1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_caudal);
+	if(Flecha_P6 == 2){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(12,7);
+	if(Flecha_P6 == 3){Cursor_Fil_Col(12,3);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_W);
+	sprintf(Numero, "%d", Aviso_TZ1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Porc);
+	if(Flecha_P6 == 3){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(13,7);
+	if(Flecha_P6 == 4){Cursor_Fil_Col(13,3);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_A);
+	sprintf(Numero, "%d", Alarma_TZ1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Porc);
+	if(Flecha_P6 == 4){enviar_frase(F_arrowRigth);}
+	
+	Cursor_Fil_Col(15,7);	
+	enviar_frase(F_TT1);
+	sprintf(Numero, "%4d", Vec_SsT[0]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+	
+	Cursor_Fil_Col(16,7);
+	enviar_frase(F_TT2);
+	sprintf(Numero, "%4d", Vec_SsT[1]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+	
+	Cursor_Fil_Col(17,7);
+	enviar_frase(F_TT3);
+	sprintf(Numero, "%4d", Vec_SsT[2]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+	
+//------------------------------COLUMNA 2---------------------------------------------//
+	Cursor_Fil_Col(9,31);
+	if(Flecha_P6 == 9){Cursor_Fil_Col(9,27);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_spTemp_Z2);
+	sprintf(Numero, "%4d", SP_TempZ2);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	if(Flecha_P6 == 9){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(11,31);
+	if(Flecha_P6 == 10){Cursor_Fil_Col(11,27);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_spCV_Z2);
+	sprintf(Numero, "%4d", SP_CaudalZ2);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_caudal);
+	if(Flecha_P6 == 10){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(12,31);
+	if(Flecha_P6 == 11){Cursor_Fil_Col(12,27); enviar_frase(F_arrowLeft);}
+	enviar_frase(F_W);
+	sprintf(Numero, "%d", Aviso_TZ2);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Porc);
+	if(Flecha_P6 == 11){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(13,31);
+	if(Flecha_P6 == 12){Cursor_Fil_Col(13,27); enviar_frase(F_arrowLeft);}
+	enviar_frase(F_A);
+	sprintf(Numero, "%d", Alarma_TZ2);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Porc);
+	if(Flecha_P6 == 12){enviar_frase(F_arrowRigth);}
+	
+	Cursor_Fil_Col(15,31);	
+	enviar_frase(F_TT4);
+	sprintf(Numero, "%4d", Vec_SsT[3]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+
+	Cursor_Fil_Col(16,31);
+	enviar_frase(F_TT5);
+	sprintf(Numero, "%4d", Vec_SsT[4]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+
+	Cursor_Fil_Col(17,31);
+	enviar_frase(F_TT6);
+	sprintf(Numero, "%4d", Vec_SsT[5]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+
+//------------------------------COLUMNA 3---------------------------------------------//
+	Cursor_Fil_Col(9,54);
+	if(Flecha_P6 == 17){Cursor_Fil_Col(9,50);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_VelCinta);
+	sprintf(Numero, "%4d", SP_VelocidadZ3);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_cinta);
+	if(Flecha_P6 == 17){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(11,54);
+	if(Flecha_P6 == 18){Cursor_Fil_Col(11,50); enviar_frase(F_arrowLeft);}
+	enviar_frase(F_spCV_Z3);
+	sprintf(Numero, "%4d", SP_CaudalZ3);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_caudal);
+	if(Flecha_P6 == 18){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(12,54);
+	if(Flecha_P6 == 19){Cursor_Fil_Col(12,50);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_W);
+	sprintf(Numero, "%d", Aviso_TZ3);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp);
+	if(Flecha_P6 == 19){enviar_frase(F_arrowRigth);}
+
+	Cursor_Fil_Col(13,54);
+	if(Flecha_P6 == 20){Cursor_Fil_Col(13,50);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_A);
+	sprintf(Numero, "%d", Alarma_TZ3);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp);
+	if(Flecha_P6 == 20){enviar_frase(F_arrowRigth);}
+	
+	Cursor_Fil_Col(15,54);	
+	enviar_frase(F_TT7);
+	sprintf(Numero, "%4d", Vec_SsT[6]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	enviar_frase(Control);
+
+	Cursor_Fil_Col(16,54);
+	enviar_frase(F_TT8);
+	sprintf(Numero, "%4d", Vec_SsT[7]);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
 		
-		
-		switch(Estado_Actual[0]){
-			
-			case 1:
-			Cursor_Fil_Col(3,40);
-			enviar_frase(F_Z1W);
-			break;
-			
-			case 2:
-			Cursor_Fil_Col(3,40);
-			enviar_frase(F_Z1A);
-			break;
-			
-			case 0:
-			Cursor_Fil_Col(3,40);
-			enviar_frase(F_Normal);
-			break;
-		}
-		
-		switch(Estado_Actual[1]){
-			case 1:
-			Cursor_Fil_Col(5,40);
-			enviar_frase(F_Z2W);
-			break;
-			
-			case 2:
-			Cursor_Fil_Col(5,40);
-			enviar_frase(F_Z2A);
-			break;
-			
-			case 0:
-			Cursor_Fil_Col(5,40);
-			enviar_frase(F_Normal);
-			break;
-		}
-		switch(Estado_Actual[2]){
-			case 1:
-			Cursor_Fil_Col(7,40);
-			enviar_frase(F_Z3W);
-			break;
-			
-			case 2:
-			Cursor_Fil_Col(7,40);
-			enviar_frase(F_Z3A);
-			break;
-			
-			case 0:
-			Cursor_Fil_Col(7,40);
-			enviar_frase(F_Normal);
-			break;
-		}
-		
-		if(Flag_Parada_Emergencia == 2){
-			Cursor_Fil_Col(9,40);
-			enviar_frase(F_Emergencia);
-		}
-		
-		if(Flag_Parada_Controlada  == 1){
-			Cursor_Fil_Col(9,40);
-			enviar_frase(F_Controlada);
-			
-			Cursor_Fil_Col(11,40);
-			enviar_frase(F_Fase);
-			sprintf(Numero, "%d", Fase);
-			UART_enviar_string(Numero);
-			
-			Cursor_Fil_Col(13,40);
-			enviar_frase(F_Tiempo);
-			sprintf(Numero, "%d", Cont_Tiempo);
-			UART_enviar_string(Numero);
-		}
-		
-		if(Flag_Secuencia_Arranque  == 1){
-			Cursor_Fil_Col(9,40);
-			enviar_frase(F_Arranque);
-			
-			Cursor_Fil_Col(11,40);
-			enviar_frase(F_Fase);
-			sprintf(Numero, "%d", Fase);
-			UART_enviar_string(Numero);
-			
-			Cursor_Fil_Col(13,40);
-			enviar_frase(F_Tiempo);
-			sprintf(Numero, "%d", Cont_Tiempo);
-			UART_enviar_string(Numero);
-		}
-		
+	/*
 		if(Falla_Sens[0] != 0){
 			Cursor_Fil_Col(11,40);
 			enviar_frase(F_moniFalla);
@@ -2743,17 +2658,155 @@ void Pantalla_6_Uart(){
 			enviar_frase(F_moniFalla);
 			enviar_frase(F_PID6);
 		}
+		*/
 		
 		Flag_Norepetir = 1;
 	}
 	
+		if (Flecha_UP == 1){
+			if(Flecha_P6 == 1 || Flecha_P6 == 0 ){
+				Flecha_P6 = 24;
+				FinFLechas_P0();
+				}else{
+				Flecha_P6--;
+				FinFLechas_P0();
+			}
+		}
+		if(Flecha_LOW == 1){
+			if(Flecha_P6 >= 24){
+				Flecha_P6 = 1;
+				FinFLechas_P0();
+				}else{
+				Flecha_P6++;
+				FinFLechas_P0();
+			}
+		}
+		if(Flecha_Right == 1){
+			if(Flecha_P6 < 17){
+			Flecha_P6 += 8;
+			FinFLechas_P0();
+			}
+		}
+		if(Flecha_Left == 1){
+			if(Flecha_P6 > 0 || Flecha_P6 > 1){
+			Flecha_P6 -= 8; 
+			FinFLechas_P0();
+			}
+		}
+		
+	if(C_Enter == 1){
+		
+		C_Enter = 0;
+		Cont_Enter++;
+		
 		if(Escape == 1){
 			Flag_Norepetir = 0;
 			Maquina_Estado = 20;
 			Escape = 0;
 			Cont_Enter = 0;
 			Ingresar_Valor = 0;
+			}else{
+			
+			if(Cont_Enter >= 2){
+				Ingresar_Valor = 0;
+				Flag_Norepetir = 3;
+				Cont_Enter = 0;
+				valor = atoi((char*)Dato_RX);
+				Enter_2 = 0;
+				}else{
+				Ingresar_Valor = 1;
+				c = 0;
+				Flag_Norepetir = 255;
+			}
 		}
+	}
+	if(Flag_Norepetir == 3){
+		Flag_Norepetir = 0;
+		switch(Flecha_P1){
+		
+			case 1:
+			SP_TempZ1 = valor;
+			guardar_eeprom(Temp_deseada_Z1,SP_TempZ1,2);
+			PIDs(1);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 2:
+			SP_CaudalZ1 = valor;
+			guardar_eeprom(Caudal_vol_deseado_Z1 ,SP_CaudalZ1,1);
+			PIDs(2);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 3:
+			valor = (valor*SP_TempZ1)/100+SP_TempZ1;
+			Aviso_TZ1 = valor;
+			guardar_eeprom(Aviso_temp_z1,valor,1);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 4:
+			valor = (valor*SP_TempZ1)/100+SP_TempZ1;
+			Alarma_TZ1 = valor;
+			guardar_eeprom(Alarma_temp_z1,valor,1);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 9:
+			SP_TempZ2 = valor;
+			guardar_eeprom(Temp_deseada_Z2,SP_TempZ2,2);
+			PIDs(3);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 10:
+			SP_CaudalZ2 = valor;
+			guardar_eeprom(Caudal_vol_deseado_Z2 ,SP_CaudalZ2,1);
+			PIDs(4);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 11:
+			valor = (valor*SP_TempZ2)/100+SP_TempZ2;
+			Aviso_TZ2  = valor;
+			guardar_eeprom(Aviso_temp_z2,valor,1);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 12:
+			valor = (valor*SP_TempZ2)/100+SP_TempZ2;
+			Alarma_TZ2 = valor;
+			guardar_eeprom(Alarma_temp_z2,valor,1);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 17:
+			SP_VelocidadZ3 = valor;
+			guardar_eeprom(Vel_cinta_transp,SP_VelocidadZ3,1);
+			PIDs(6);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 18:
+			SP_CaudalZ3 = valor;
+			guardar_eeprom(Caudal_vol_deseado_Z3 ,SP_CaudalZ3,2);
+			PIDs(5);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 19:
+			Aviso_TZ3 = valor;
+			guardar_eeprom(Aviso_temp_z3,valor,2);
+			Flag_Norepetir = 0;
+			break;
+			
+			case 20:
+			Alarma_TZ3 = valor;
+			guardar_eeprom(Alarma_temp_z3,valor,2);
+			Flag_Norepetir = 0;
+			break;
+		}
+	}
 }
 
 void adecuacion_sensores(){
@@ -2885,18 +2938,18 @@ void adecuacion_sensores(){
 	
 	PromedioZona_1 = (Temp_Z1)/PromedioZona_1;
 	
-	if(Flag_Secuencia_Arranque != 1 && Estado_Horno != 0){
+	if(Flag_Secuencia_Arranque != 1){
 		comparaciones(SP_TempZ1, PromedioZona_1, Aviso_TZ1, Alarma_TZ1,1);
 	}
 	PromedioZona_2 = Temp_Z2/PromedioZona_2;
 	
-	if(Flag_Secuencia_Arranque != 1 && Estado_Horno != 0){
+	if(Flag_Secuencia_Arranque != 1){
 		comparaciones(SP_TempZ2, PromedioZona_2, Aviso_TZ2, Alarma_TZ2,2);
 	}
 	
 	PromedioZona_3 = Temp_Z3/PromedioZona_3;
 	
-	if(Flag_Secuencia_Arranque != 1 && Estado_Horno != 0){
+	if(Flag_Secuencia_Arranque != 1){
 		comparaciones(0, PromedioZona_3, Aviso_TZ3, Alarma_TZ3,3);
 	}
 }
@@ -3033,41 +3086,45 @@ void PIDs(uint8_t Actuador){
 
 void Chequear_PIDs_Fallas(void)
 {
-	uint8_t estado_actual = PINB;
-	uint8_t mask = 0x3F;
+	uint8_t estado_actual = PINB & 0x3F;   // Solo PB0–PB5
 
-	// 1 = falla (porque invertimos)
-	uint8_t fallas = (~estado_actual) & mask;
+	uint8_t hay_falla = 0;
 
-	if (fallas)
+	for (uint8_t i = 0; i < 6; i++)
 	{
-		// Hay alguna falla
-		Flag_Parada_Emergencia = 1;
-
-		// Acumular fallas
-		if (fallas & (1 << PB0)) Vec_PIDs[0] = 1;
-		if (fallas & (1 << PB1)) Vec_PIDs[1] = 1;
-		if (fallas & (1 << PB2)) Vec_PIDs[2] = 1;
-		if (fallas & (1 << PB3)) Vec_PIDs[3] = 1;
-		if (fallas & (1 << PB4)) Vec_PIDs[4] = 1;
-		if (fallas & (1 << PB5)) Vec_PIDs[5] = 1;
-	}
-	else
-	{
-		// Todo OK ? resetear
-		for (uint8_t i = 0; i < 6; i++)
+		if (!(estado_actual & (1 << i)))   // Si está en 0 ? falla
+		{
+			Vec_PIDs[i] = 1;
+			hay_falla = 1;
+		}
+		else
 		{
 			Vec_PIDs[i] = 0;
 		}
+	}
 
+	if (hay_falla)
+	{
+		Flag_Parada_Emergencia = 1;
+	}
+	else
+	{
 		Flag_Parada_Emergencia = 0;
+		Estado_Horno = 0;
 	}
 }
 
 void ParadaEmergencia(){
 	
 	Flag_Parada_Emergencia = 2;
-	Estado_Horno = 5;
+	Estado_Horno = 4;
+	Led_Verde = 0;
+	Led_Rojo = 2;
+	Actuador = 0;
+	
+	Fase = 0;
+	Cont_Tiempo = 65535;
+	Flag_Secuencia_Arranque = 0;
 	
 	DAC_1A = 0;
 	Escribir_MAX5822 (DAC1, canalA, DAC_1A);
@@ -3086,14 +3143,11 @@ void ParadaEmergencia(){
 	
 	DAC_3B = 0;
 	Escribir_MAX5822 (DAC3, canalB, DAC_3B);
-	
-	Led_Verde = 0;
-	Led_Rojo = 2;
-	Actuador = 0;
 }
 
 void ParadaControlada(){
 	
+	Flag_Secuencia_Arranque = 0;
 	
 	switch(Fase){
 		
@@ -3178,6 +3232,8 @@ void ParadaControlada(){
 }
 
 void SecuenciaArranque(){
+	
+	Flag_Parada_Controlada = 0;
 	
 	switch(Fase){
 		
@@ -3284,9 +3340,10 @@ void SecuenciaArranque(){
 		if(Cont_Tiempo >= Tiempo_Calentamiento){
 			Flag_Secuencia_Arranque = 0;
 			Fin_Arranque = 1;
-			Cont_Tiempo = 65535;
 			Led_Verde = 1;
 			Estado_Horno = 2;
+			Fase = 0;
+			Cont_Tiempo = 65535;
 		}
 		break;
 	}
