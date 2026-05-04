@@ -2319,38 +2319,47 @@ void Pantalla_6_Uart(){
 	enviar_frase(F_Unid_Temp_MQ3);
 	enviar_frase(Control);
 	
+	Cursor_Fil_Col(19,7);
+	if(Flecha_P6 == 4){Cursor_Fil_Col(13,3);enviar_frase(F_arrowLeft);}
+	enviar_frase(F_H1);
+	sprintf(Numero, "%4d", R_H1);
+	UART_enviar_string(Numero);
+	enviar_frase(F_Unid_Temp_MQ3);
+	if(Flecha_P6 == 4){enviar_frase(F_arrowRigth);}
+	
+	
 //------------------------------COLUMNA 2---------------------------------------------//
 	Cursor_Fil_Col(9,31);
-	if(Flecha_P6 == 9){Cursor_Fil_Col(9,27);enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 10){Cursor_Fil_Col(9,27);enviar_frase(F_arrowLeft);}
 	enviar_frase(F_spTemp_Z2);
 	sprintf(Numero, "%4d", SP_TempZ2);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_Temp_MQ3);
-	if(Flecha_P6 == 9){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 10){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(11,31);
-	if(Flecha_P6 == 10){Cursor_Fil_Col(11,27);enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 11){Cursor_Fil_Col(11,27);enviar_frase(F_arrowLeft);}
 	enviar_frase(F_spCV_Z2);
 	sprintf(Numero, "%4d", SP_CaudalZ2);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_caudal);
-	if(Flecha_P6 == 10){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 11){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(12,31);
-	if(Flecha_P6 == 11){Cursor_Fil_Col(12,27); enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 12){Cursor_Fil_Col(12,27); enviar_frase(F_arrowLeft);}
 	enviar_frase(F_W);
 	sprintf(Numero, "%d", Aviso_TZ2);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_Porc);
-	if(Flecha_P6 == 11){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 12){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(13,31);
-	if(Flecha_P6 == 12){Cursor_Fil_Col(13,27); enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 13){Cursor_Fil_Col(13,27); enviar_frase(F_arrowLeft);}
 	enviar_frase(F_A);
 	sprintf(Numero, "%d", Alarma_TZ2);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_Porc);
-	if(Flecha_P6 == 12){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 13){enviar_frase(F_arrowRigth);}
 	
 	Cursor_Fil_Col(15,31);	
 	enviar_frase(F_TT4);
@@ -2375,36 +2384,36 @@ void Pantalla_6_Uart(){
 
 //------------------------------COLUMNA 3---------------------------------------------//
 	Cursor_Fil_Col(9,54);
-	if(Flecha_P6 == 17){Cursor_Fil_Col(9,50);enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 19){Cursor_Fil_Col(9,50);enviar_frase(F_arrowLeft);}
 	enviar_frase(F_VelCinta);
 	sprintf(Numero, "%4d", SP_VelocidadZ3);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_cinta);
-	if(Flecha_P6 == 17){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 19){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(11,54);
-	if(Flecha_P6 == 18){Cursor_Fil_Col(11,50); enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 20){Cursor_Fil_Col(11,50); enviar_frase(F_arrowLeft);}
 	enviar_frase(F_spCV_Z3);
 	sprintf(Numero, "%4d", SP_CaudalZ3);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_caudal);
-	if(Flecha_P6 == 18){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 20){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(12,54);
-	if(Flecha_P6 == 19){Cursor_Fil_Col(12,50);enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 21){Cursor_Fil_Col(12,50);enviar_frase(F_arrowLeft);}
 	enviar_frase(F_W);
 	sprintf(Numero, "%d", Aviso_TZ3);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_Temp);
-	if(Flecha_P6 == 19){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 21){enviar_frase(F_arrowRigth);}
 
 	Cursor_Fil_Col(13,54);
-	if(Flecha_P6 == 20){Cursor_Fil_Col(13,50);enviar_frase(F_arrowLeft);}
+	if(Flecha_P6 == 22){Cursor_Fil_Col(13,50);enviar_frase(F_arrowLeft);}
 	enviar_frase(F_A);
 	sprintf(Numero, "%d", Alarma_TZ3);
 	UART_enviar_string(Numero);
 	enviar_frase(F_Unid_Temp);
-	if(Flecha_P6 == 20){enviar_frase(F_arrowRigth);}
+	if(Flecha_P6 == 22){enviar_frase(F_arrowRigth);}
 	
 	Cursor_Fil_Col(15,54);	
 	enviar_frase(F_TT7);
@@ -2569,55 +2578,55 @@ void Pantalla_6_Uart(){
 			Flag_Norepetir = 0;
 			break;
 			
-			case 9:
+			case 10:
 			SP_TempZ2 = valor;
 			guardar_eeprom(Temp_deseada_Z2,SP_TempZ2,2);
 			PIDs(3);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 10:
+			case 11:
 			SP_CaudalZ2 = valor;
 			guardar_eeprom(Caudal_vol_deseado_Z2 ,SP_CaudalZ2,1);
 			PIDs(4);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 11:
+			case 12:
 			valor = (valor*SP_TempZ2)/100+SP_TempZ2;
 			Aviso_TZ2  = valor;
 			guardar_eeprom(Aviso_temp_z2,valor,1);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 12:
+			case 13:
 			valor = (valor*SP_TempZ2)/100+SP_TempZ2;
 			Alarma_TZ2 = valor;
 			guardar_eeprom(Alarma_temp_z2,valor,1);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 17:
+			case 19:
 			SP_VelocidadZ3 = valor;
 			guardar_eeprom(Vel_cinta_transp,SP_VelocidadZ3,1);
 			PIDs(6);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 18:
+			case 20:
 			SP_CaudalZ3 = valor;
 			guardar_eeprom(Caudal_vol_deseado_Z3 ,SP_CaudalZ3,2);
 			PIDs(5);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 19:
+			case 21:
 			Aviso_TZ3 = valor;
 			guardar_eeprom(Aviso_temp_z3,valor,2);
 			Flag_Norepetir = 0;
 			break;
 			
-			case 20:
+			case 22:
 			Alarma_TZ3 = valor;
 			guardar_eeprom(Alarma_temp_z3,valor,2);
 			Flag_Norepetir = 0;
