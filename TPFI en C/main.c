@@ -1261,7 +1261,7 @@ ISR(PCINT0_vect){
 	}
 	estado_anterior_B = estado_actual;
 		}
-}
+
 
 ISR(PCINT1_vect){
 	uint8_t estado_PC2_actual;
