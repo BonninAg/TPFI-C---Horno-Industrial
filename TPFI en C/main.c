@@ -21,7 +21,7 @@ uint8_t deleteME;
 //uint16_t deleteME3 = 5;
 
 void USART_Transmit(unsigned char data);
-void USART_SendString(char* s);
+void USART_SendString(char* strptr);
 
 /*--------variables menu lcd---------*/
 
@@ -38,18 +38,33 @@ struct pantallaPPL {
 char maq_estado_pantalla = 100;
 uint8_t Menu = 0;
 uint8_t Cursor = 0;
-char Enter = 0;
-char Exit = 0;
+uint8_t Enter = 0;
+uint8_t Exit = 0;
+uint8_t reconocimiento = 0;
 
 uint8_t Actualizar_Menu = 0;
 uint8_t no_repetir = 1;
 uint8_t cambio_menu = 0;
 
 char renglon[4] = {0x80, 0xC0, 0x90, 0xD0};
-
 PROGMEM const char espacio[] = " ";
 
+char renglon_WarningSensores [8] = {0x85, 0xC5, 0x95, 0xD5, 0x8D, 0xCD, 0x9D, 0xDD};
+uint8_t reconocidos_Sensores [8];
+char renglon_AlarmPID [] = {0xC6, 0x96, 0xD6, 0xCE, 0x9E, 0xDE};
+uint8_t reconocidos_PIDS [6];
+char renglon_WarAlaTemps [8] = {0xCA, 0x9A, 0xDA};
+uint8_t reconocidos_AvisosTemp [3];
+uint8_t reconocidos_AlarmasTemp [3];
+
 uint8_t Estado_Planta = 1;
+PROGMEM const char Apagado[] = "Apagado     ";
+PROGMEM const char Arranque[] = "Arranque    ";
+PROGMEM const char Activo[] = "Activo      ";
+PROGMEM const char PControlada[] = "P.Controlada";
+PROGMEM const char PEmergencia[] = "P.Emergencia";
+PROGMEM const char * const Estado[] = {Apagado, Arranque, Activo, PControlada, PEmergencia};
+char arrayProm[5];
 /*-----------------------------------------*/
 
 /*--------variables para el Keypad---------*/
@@ -295,10 +310,9 @@ uint16_t R_TT6;
 uint16_t R_TT7;
 uint16_t R_TT8;
 
-
-uint16_t Tiempo_PreCalentamiento = 10;
-uint16_t Tiempo_Enfriamiento = 10;
-uint16_t Tiempo_Calentamiento = 10;
+uint16_t Tiempo_PreCalentamiento = 2;
+uint16_t Tiempo_Enfriamiento = 2;
+uint16_t Tiempo_Calentamiento = 2;
 
 uint16_t SP_TempZ1 = 0;
 uint16_t SP_TempZ2 = 0;
@@ -373,9 +387,18 @@ uint8_t Fin_Arranque = 0;
 uint8_t Estado_Horno = 0;
 volatile uint8_t Contador_Temp = 0;
 
+volatile uint8_t ads1115_address;
+volatile uint8_t ads1155_pointer_register;
+volatile uint8_t ads1155_MSB_Config;
+volatile uint8_t ads1155_LSB_Config;
+
 #endif
 
+	
 int main(void){
+	
+	maq_estado_pantalla = 60;
+//	USART_SendString("entre al main\r\n");
 					
 	#ifndef Configuracion
 	#define Configuracion
@@ -386,7 +409,7 @@ int main(void){
 	struct pantallaPPL principal2 =		{101, &Pantalla_Principal_2, {50, 40, 30},		{100, 101},		 2,			 0,			 1};
 	
 	struct pantallaPPL avisos =			{80,  &Menu_Avisos,			 {0, 81, 82},		{0},			 2,			 1,			 0};
-	struct pantallaPPL alarmas =		{70,  &Menu_Alarmas,		 {0, 71, 72, 73},	{0},		 	 3,			 1,			 0};
+	struct pantallaPPL alarmas =		{70,  &Menu_Alarmas,		 {0, 71, 72},		{0},		 	 2,			 1,			 0};
 	
 	struct pantallaPPL setPoint =		{60,  NULL,					 {0},				{60, 61, 62},	 0,			 0,			 2};
 	struct pantallaPPL R_Sensores =		{40,  NULL,					 {0},				{40, 41, 42},	 0,			 0,			 2};
@@ -516,11 +539,12 @@ int main(void){
 
 	Iniciar_LCD();
 	#endif
-
-    // USART_SendString("Fin Config\r\n");//************************************ ACÁ CAMBIE A COMENTARIO LO DE LA USARTT
+	
 	leer_eeprom();
 	Chequear_PIDs_Fallas();
+	
     while (1) {
+//	USART_SendString("while 1\r\n");
 	
 	if(Flag_Secuencia_Arranque == 1){
 		SecuenciaArranque();
@@ -563,25 +587,16 @@ int main(void){
 /*-------------------------------------------Teclado------------------------------------------*/	
 		if(Habilitar_Teclado == 1){
 			Habilitar_Teclado =0;		
-			deleteME = Convertir_Keypad (valor_adc, &Menu, &Cursor, &Enter, &Exit, &cambio_menu);
-			Actualizar_Menu = 0;
-					
+			Convertir_Keypad (valor_adc, &Menu, &Cursor, &Enter, &Exit, &cambio_menu, &reconocimiento);
+			Actualizar_Menu = 0;		
 		}//teclado
 /*---------------------------------------------------------------------------------------------*/		
-	
 
-while (Actualizar_Menu < 2) {
-	Actualizar_Menu += 1;
-	
-/*
-//	sprintf(imprimir, "maqEst: %u\r\n", maq_estado_pantalla);             ACA CAMBIEN A COMENTARIO LO DE LA USART
-//	USART_SendString(imprimir);
-
-	sprintf(imprimir, "cursor: %u\r\n", Cursor);
-	USART_SendString(imprimir);
-	sprintf(imprimir, "Menu: %u\r\n", Menu);
-	USART_SendString(imprimir);
-*/	
+if (Actualizar_Menu == 0){
+	Actualizar_Menu =1;
+	USART_SendString("entre a las pantallas\r\n");
+//while (Actualizar_Menu < 2) {
+//	Actualizar_Menu += 1;
 /*-----------------------principal 1----------------------------------*/
 	if (maq_estado_pantalla == 100){
 
@@ -659,14 +674,31 @@ while (Actualizar_Menu < 2) {
 	}//maq101
 /*--------------------------------------------------------------------*/	
 
-
-
 /*------------------------General---------------------------------*/
 	if (maq_estado_pantalla == 90){
 		if (no_repetir)	{
 			no_repetir =0;
-			Menu_General(Estado_Planta);
+			Menu_General();
 		}
+				
+		Escribir_Comando_LCD(0x88);
+		sprintf(arrayProm,"%4u", PromedioZona_1);
+		Escribir_Texto_LCD(arrayProm);
+		Escribir_Comando_LCD(0xC8);
+		sprintf(arrayProm,"%4u", PromedioZona_2);
+		Escribir_Texto_LCD(arrayProm);		
+		Escribir_Comando_LCD(0x98);
+		sprintf(arrayProm,"%4u", PromedioZona_3);
+		Escribir_Texto_LCD(arrayProm);
+		
+	/*	Escribir_Comando_LCD(Linea4_);
+		for (uint8_t i = 0; i< 15; i++){
+			Escribir_FraseFlash_LCD(espacio);
+		}*/
+		Escribir_Comando_LCD(Linea4_);
+		char *Puntero_Estado = (char*) pgm_read_word (&(Estado[Estado_Horno]));	//(char*) es el cast, le dice que el número lo trate como lugar de memoria, ej= va a leer 0x1024. Eso es un lugar de memoria, no un entero
+		Escribir_FraseFlash_LCD(Puntero_Estado);
+		
 		if (Exit == 1){
 			Exit = 0;
 			no_repetir =1;
@@ -704,7 +736,7 @@ while (Actualizar_Menu < 2) {
 	
 	}
 /*--------------------------------------------------------------------*/
-	
+
 /*------------------------avisos sensores---------------------------------*/
 	if (maq_estado_pantalla == 81){
 		if (no_repetir)	{
@@ -716,8 +748,35 @@ while (Actualizar_Menu < 2) {
 			no_repetir =1;
 			maq_estado_pantalla = avisos.dni;
 		}
+	
+		if (reconocimiento){
+			reconocimiento = 0;
+			//acá hago el reconocimiento posta de todos los sensores
+			for (uint8_t i =0; i<8; i++){	
+				Escribir_Comando_LCD(renglon_WarningSensores[i]);
+				Escribir_FraseFlash_LCD(espacio);
+				reconocidos_Sensores[i] = 1;
+			}
+		}
+		for (uint8_t i = 0; i < 8; i++) {
+			if (Vec_SsT[i] != 9999) {								//si anda bien
+				reconocidos_Sensores[i] = 0;
+				Escribir_Comando_LCD(renglon_WarningSensores[i]);
+				Escribir_FraseFlash_LCD(espacio);					
+			}
+			else if (Vec_SsT[i] == 9999 && reconocidos_Sensores[i] == 0) {	//si se rompio y no está reconocido
+				Escribir_Comando_LCD(renglon_WarningSensores[i]);
+				Escribir_Caracter_LCD(asterisco);
+			}
+			else if (Vec_SsT[i] == 9999 && reconocidos_Sensores[i] == 1) {	//si se rompió y está reconocido
+				Escribir_Comando_LCD(renglon_WarningSensores[i]);
+				Escribir_FraseFlash_LCD(espacio);
+			}
+		}
 	}
 /*--------------------------------------------------------------------*/
+
+	
 /*------------------------avisos temperaturas---------------------------------*/	
 	if (maq_estado_pantalla == 82){
 		if (no_repetir)	{
@@ -728,6 +787,36 @@ while (Actualizar_Menu < 2) {
 			Exit = 0;
 			no_repetir =1;
 			maq_estado_pantalla = avisos.dni;
+		}
+		if (reconocimiento){
+			reconocimiento = 0;
+			//acá hago el reconocimiento posta de todos los sensores
+			for (uint8_t i =0; i<3; i++){
+				Estado_Actual[i] = 3;
+				Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+				Escribir_FraseFlash_LCD(espacio);
+				//reconocidos_AvisosTemp[i] = 1;
+			}
+		}
+		for (uint8_t i = 0; i < 3; i++) {
+			switch(Estado_Actual[i]){
+				case 0:
+				//todo normal
+				//reconocidos_AvisosTemp[i] = 0;
+				Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+				Escribir_FraseFlash_LCD(espacio);
+				break;
+				case 1:
+				//mandar por pantalla AVISO NO reconocido
+				Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+				Escribir_Caracter_LCD(asterisco);
+				break;
+				case 3:
+				//mandar por pantalla AVISO reconocido
+				Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+				Escribir_FraseFlash_LCD(espacio);
+				break;
+			}
 		}
 	}
 /*--------------------------------------------------------------------*/	
@@ -762,11 +851,8 @@ if (maq_estado_pantalla == 70){
 }
 /*--------------------------------------------------------------------*/
 
-/*------------------------Alarmas Sensores---------------------------------*/
-/*-------------------------------------------------------------------------*/
-
 /*------------------------Alarmas temperaturas---------------------------------*/
-if (maq_estado_pantalla == 72){
+if (maq_estado_pantalla == 71){
 	if (no_repetir)	{
 		no_repetir =0;
 		Menu_Alarmas_Temperatura();
@@ -776,11 +862,63 @@ if (maq_estado_pantalla == 72){
 		no_repetir =1;
 		maq_estado_pantalla = alarmas.dni;
 	}
+	if (reconocimiento){
+		reconocimiento = 0;
+		//acá hago el reconocimiento posta de todas las temperaturas
+		for (uint8_t i =0; i<3; i++){
+			Estado_Actual[i] = 4;
+			Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+			Escribir_FraseFlash_LCD(espacio);
+		}
+	}
+	for (uint8_t i = 0; i < 3; i++) {
+		switch(Estado_Actual[i]){
+			case 0:
+			//todo normal
+			Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+			Escribir_FraseFlash_LCD(espacio);
+			break;
+			case 2:
+			//mandar por pantalla AVISO NO reconocido
+			Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+			Escribir_Caracter_LCD(asterisco);
+			break;
+			case 4:
+			//mandar por pantalla AVISO reconocido
+			Escribir_Comando_LCD(renglon_WarAlaTemps[i]);
+			Escribir_FraseFlash_LCD(espacio);
+			break;
+		}
+	}
+	
 }
+
+
+/*
+switch(Estado_Actual[0]){
+	case 1:
+	// mandar por pantalla AVISO NO reconocido
+	break;
+	case 2:
+	// mandar por pantalla ALARMA NO reconocido
+	break;
+	case 3:
+	// mandar por pantalla AVISO reconocido
+	break;
+	case 4:
+	// mandar por pantalla ALARMA reconocido
+	break;
+	case 0:
+	//todo normal
+	break;
+}
+*/
 /*--------------------------------------------------------------------*/
 
+
+
 /*------------------------Alarmas PIDS---------------------------------*/
-if (maq_estado_pantalla == 73){
+if (maq_estado_pantalla == 72){
 	if (no_repetir)	{
 		no_repetir =0;
 		Menu_Alarmas_PIDS();
@@ -789,6 +927,30 @@ if (maq_estado_pantalla == 73){
 		Exit = 0;
 		no_repetir =1;
 		maq_estado_pantalla = alarmas.dni;
+	}
+	if (reconocimiento){
+		reconocimiento = 0;
+		//acá hago el reconocimiento posta de los PIDs
+		for (uint8_t i = 0; i<6; i++){
+			Escribir_Comando_LCD(renglon_AlarmPID[i]);
+			Escribir_FraseFlash_LCD(espacio);
+			reconocidos_PIDS[i] = 1;
+		}
+	}
+	for (uint8_t i = 0; i < 6; i++) {
+		if (Vec_PIDs[i] == 0) {						//si está bien, saco el asterisco
+			reconocidos_PIDS[i] = 0;
+			Escribir_Comando_LCD(renglon_AlarmPID[i]);
+			Escribir_FraseFlash_LCD(espacio);
+		}
+		else if (Vec_PIDs[i] == 1 && reconocidos_PIDS[i] == 0) {	//si se rompio y no está reconocido
+			Escribir_Comando_LCD(renglon_AlarmPID[i]);				
+			Escribir_Caracter_LCD(asterisco);						//pongo el asterisco
+		}
+		else if (Vec_PIDs[i] == 1 && reconocidos_PIDS[i] == 1) {	//si se rompió y está reconocido
+			Escribir_Comando_LCD(renglon_AlarmPID[i]);				
+			Escribir_FraseFlash_LCD(espacio);						//saco el asterisco
+		}
 	}
 }
 /*--------------------------------------------------------------------*/
@@ -903,7 +1065,6 @@ if (maq_estado_pantalla == 30){
 	}
 }
 /*-------------------------------------------------------------------------*/
-
 }//actualizar menu
 
 
@@ -997,36 +1158,15 @@ ISR(USART_RX_vect){
 }
 
 ISR(TIMER1_COMPA_vect) {
-//USART_SendString("timer1\r\n");//**************************************
+//USART_SendString("Timer 1\r\n");
+/*----Actualizar pantallas LCD----*/
+	Actualizar_Menu = 0;
+/*--------------------------------*/
 
-//----------leer los ads1115----------------
+/*----------leer los ads1115----------------*/
 	Habilitar_LeerTemperatura = 1;
 	Canal_Temp = 0;
-	
-//for (char i = 0; i < 8; i++){
-//	sprintf(buffer, "Temp: %u\r\n", Vector_Temperaturas[i]);	// Convertir el valor numérico a una cadena de texto
-	//USART_SendString(buffer);							// Enviar el texto por el puerto serie
-//}
-//USART_SendString("-------------\r\n");	
-//------------------------------------------
-
-
-
-/*------------------dacs----------------------------
-	contador += 10;
-	if (contador > 4096){
-		contador = 0;
-	}
-	
-	Escribir_MAX5822 (DAC1, canalA, contador);
-	Escribir_MAX5822 (DAC1, canalB, contador);
-	
-	Escribir_MAX5822 (DAC2, canalA, contador);
-	Escribir_MAX5822 (DAC2, canalB, contador);
-	
-	Escribir_MAX5822 (DAC3, canalA, contador);
-	Escribir_MAX5822 (DAC3, canalB, contador);
----------------------------------------------------*/
+/*------------------------------------------*/
 
 	if(Cont_Tiempo != 65535){
 		Cont_Tiempo++;
@@ -1090,15 +1230,12 @@ ISR(TIMER1_COMPA_vect) {
 ISR(PCINT0_vect){
 	    uint8_t estado_actual = PINB;
 	    uint8_t mask = 0x3F;
-
-	    // Detectar cambios
-	    uint8_t cambios = (estado_actual ^ estado_anterior_B) & mask;
-
-	    // Flanco de bajada (1 -> 0)
-	    uint8_t bajaron_a_0 = cambios & (~estado_actual);
-
-	    // Flanco de subida (0 -> 1)
-	    uint8_t subieron_a_1 = cambios & estado_actual;
+	    
+	    uint8_t cambios = (estado_actual ^ estado_anterior_B) & mask;	// Detectar cambios
+	    
+	    uint8_t bajaron_a_0 = cambios & (~estado_actual);				// Flanco de bajada (1 -> 0)
+	    
+	    uint8_t subieron_a_1 = cambios & estado_actual;					// Flanco de subida (0 -> 1)
 
 	    // --- FALLAS (1 -> 0) ---
 	    if (bajaron_a_0 & (1 << PB0)) Vec_PIDs[0] = 1;
@@ -1120,10 +1257,11 @@ ISR(PCINT0_vect){
 	    // Si al menos uno está en falla ? activar
 	    if ((~estado_actual) & mask)
 	    Flag_Parada_Emergencia = 1;
-	    else
+	    else{
 	    Flag_Parada_Emergencia = 0;
 		Estado_Horno = 0;
 	    estado_anterior_B = estado_actual;
+		}
 }
 
 ISR(PCINT1_vect)
@@ -1253,6 +1391,8 @@ void Cursor_Fil_Col(uint8_t fila, uint8_t columna){
 	
 	UART_enviar_string(buffer);
 }
+
+
 
 void FinFLechas_P0(){
 	Flag_Norepetir = 0;
@@ -2403,7 +2543,7 @@ void Pantalla_6_Uart(){
 			enviar_frase(F_PID6);
 		}
 		*/
-		
+
 		Flag_Norepetir = 1;
 	}
 	
@@ -2697,6 +2837,8 @@ void adecuacion_sensores(){
 	if(Flag_Secuencia_Arranque != 1){
 		comparaciones(0, PromedioZona_3, Aviso_TZ3, Alarma_TZ3,3);
 	}
+
+Actualizar_Menu = 0;
 }
 
 void comparaciones(uint16_t SP_Temp, uint16_t Prom, uint16_t Aviso, uint16_t Alarma, uint8_t Zona){
@@ -2829,31 +2971,24 @@ void PIDs(uint8_t Actuador){
 	}
 }
 
-void Chequear_PIDs_Fallas(void)
-{
+void Chequear_PIDs_Fallas(void){
 	uint8_t estado_actual = PINB & 0x3F;   // Solo PB0–PB5
 
 	uint8_t hay_falla = 0;
 
-	for (uint8_t i = 0; i < 6; i++)
-	{
-		if (!(estado_actual & (1 << i)))   // Si está en 0 ? falla
-		{
+	for (uint8_t i = 0; i < 6; i++)	{
+		if (!(estado_actual & (1 << i))){		// Si está en 0 ? falla
 			Vec_PIDs[i] = 1;
 			hay_falla = 1;
-		}
-		else
-		{
+		}else{
 			Vec_PIDs[i] = 0;
 		}
 	}
 
-	if (hay_falla)
-	{
+	if (hay_falla)	{
 		Flag_Parada_Emergencia = 1;
 	}
-	else
-	{
+	else{
 		Flag_Parada_Emergencia = 0;
 		Estado_Horno = 0;
 	}
@@ -3207,16 +3342,19 @@ uint16_t EEPROM_read_uint16(uint16_t address)
 
 
 
-
 void USART_Transmit(unsigned char data) {
-	// Esperar a que el buffer de transmisi?n est? vac?o
+	// Esperar a que el buffer de transmisión esté vacío
 	while (!(UCSR0A & (1 << UDRE0)));
-	// Poner el dato en el registro, esto env?a el byte
+	
+	// Poner los datos en el buffer, esto envía el paquete
 	UDR0 = data;
 }
 
-void USART_SendString(char* s) {
-	while (*s) {
-		USART_Transmit(*s++);
+// Enviar una cadena completa (frase)
+void USART_SendString(char* strptr) {
+	while (*strptr != 0x00) {
+		USART_Transmit(*strptr);
+		strptr++;
 	}
 }
+

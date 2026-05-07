@@ -6,60 +6,56 @@
  */ 
 
 
-//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI-C---Horno-Industrial\TPFI en C\Keypad\Keypad.h"
+
 #include "Keypad.h"
 
-
-uint8_t Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter ,char* ptrExit, uint8_t* ptrCambio_Menu){
+void Convertir_Keypad (uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, uint8_t* ptrEnter ,uint8_t* ptrExit, uint8_t* ptrCambio_Menu, uint8_t* ptrReconocimiento){
 
 	
-	if(valor_adc >= 900 && valor_adc < 910){
+	if(valor_adc >= 900 && valor_adc < 910){	  //2
 		*ptrCursor -= 1;
-		return 2;
+		return;
 	}
-	
-	else if(valor_adc >= 745 && valor_adc < 760){
+	else if(valor_adc >= 745 && valor_adc < 760){ //4
 		*ptrMenu -= 1;
 		*ptrCambio_Menu = 1;		
-		return 4;	
+		return;	
 	}
-	
-	else if(valor_adc >= 870 && valor_adc < 880){
+	else if(valor_adc >= 870 && valor_adc < 880){ //5
 		*ptrEnter = 1;
-		return 5;	
+		return;	
 	}
-	
-	
-	else if(valor_adc >= 975 && valor_adc < 985){
+	else if(valor_adc >= 975 && valor_adc < 985){ //6
 		*ptrMenu += 1;
 		*ptrCambio_Menu = 1;
-		return 6;
+		return;
 	}
-	
-	else if(valor_adc >= 835 && valor_adc < 850){
+	else if(valor_adc >= 835 && valor_adc < 850){ //8
 		*ptrCursor += 1;
-		return 8;
+		return;
 	}
-	
 	else if(valor_adc >= 875 && valor_adc < 895){ // #
 		*ptrExit = 1;
-		return 11;
+		return;
 	}
-	else if(valor_adc >= 795 && valor_adc < 810)
-	return 0;
-	else if(valor_adc >= 765 && valor_adc < 775)
-	return 1;
-	else if(valor_adc >= 1010 && valor_adc < 1020)
-	return 3;
-	else if(valor_adc >= 715 && valor_adc < 725)
-	return 7;	
-	else if(valor_adc >= 925 && valor_adc < 935)
-	return 9;
-	else if(valor_adc >= 690 && valor_adc < 700) // *
-	return 10;
+	else if(valor_adc >= 690 && valor_adc < 700){ // *
+		*ptrReconocimiento = 1;
+	return;	
+	}
 	
-
-	return 255; // ningún botón
+/*	
+	else if(valor_adc >= 795 && valor_adc < 810)  //0
+	return;
+	else if(valor_adc >= 765 && valor_adc < 775) //1
+	return;
+	else if(valor_adc >= 1010 && valor_adc < 1020) //3
+	return;
+	else if(valor_adc >= 715 && valor_adc < 725) //7
+	return;	
+	else if(valor_adc >= 925 && valor_adc < 935) //9
+	return;
+*/
+	return; // ningún botón
 }
 
 

@@ -13,9 +13,12 @@
 
 
 
-uint8_t Convertir_Keypad(uint16_t valor_adc, uint8_t* ptrMenu, uint8_t* ptrCursor, char* ptrEnter, char* ptrExit, uint8_t* ptrCambio_Menu);
-
-
-
+void Convertir_Keypad(uint16_t valor_adc,
+						 uint8_t* ptrMenu, 
+						 uint8_t* ptrCursor,
+						 uint8_t* ptrEnter,
+						 uint8_t* ptrExit,
+						 uint8_t* ptrCambio_Menu,
+						 uint8_t* ptrReconocimiento);
 
 #endif /* KEYPAD_H_ */

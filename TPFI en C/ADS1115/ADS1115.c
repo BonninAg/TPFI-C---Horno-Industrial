@@ -6,7 +6,7 @@
  */ 
 
 
-//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\ADS1115\ADS1115.h"
+
 #include "ADS1115.h"
 
 

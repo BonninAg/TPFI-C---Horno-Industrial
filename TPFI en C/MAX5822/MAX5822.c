@@ -9,17 +9,9 @@
 #include "../MAX5822/MAX5822.h"
 #include "../I2C/I2C.h"
 
-//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\MAX5822\MAX5822.h"
-//#include "F:\Acceso Directos Posta\Accesos Directos\UADER\2° Año\Sistemas digitales IV\TP final C - Horno insdustrial\TPFI en C\TPFI en C\I2C\I2C.h"
-//#include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\MAX5822\MAX5822.h"
-//#include "C:\Users\joaqu\OneDrive\Escritorio\TFI C\TPFI-C---Horno-Industrial\TPFI en C\I2C\I2C.h"
-
 //--------------------------Escribir en el DAC-------------------------
 void Escribir_MAX5822 (uint8_t MAX5822_address, uint8_t canal, uint16_t convertirValor){
 
-//USART_SendString("max5822\r\n");**************************************
-
-	uint16_t lalala;
 	uint8_t byte1;
 	uint8_t byte2;
 
@@ -35,12 +27,6 @@ void Escribir_MAX5822 (uint8_t MAX5822_address, uint8_t canal, uint16_t converti
 	Enviar_Dato_I2C(byte2);							//8 más bajos
 	Stop_I2C();
 
- //lalala = (byte1<<8)|byte2;
-
-//sprintf (pruebaChar, "valorMAX: %u\r\n", lalala);		// Convertir el valor numérico a una cadena de texto
-//USART_SendString(prueba);
-	
-
-	//------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------
 
 }

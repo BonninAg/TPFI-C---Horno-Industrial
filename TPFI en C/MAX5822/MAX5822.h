@@ -28,10 +28,6 @@
 #define canalA  0x00
 #define canalB  0x10
 
-
 void Escribir_MAX5822 (uint8_t MAX5822_address, uint8_t canal, uint16_t convertirValor);
-
-
-
 
 #endif /* MAX5822_H_ */
